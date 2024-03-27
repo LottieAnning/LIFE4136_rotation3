@@ -1,6 +1,11 @@
 # LIFE4136_rotation3
 This is the github page for rotation 3 of LIFE4136, exploring ploidy patterns in European Arabidopsis lyrata.
 
+## Files required
+
+* **vcf** with all your samples
+* reference **fasta file** to which your reads were aligned to
+
 ## Load packages
 ```
 library(vcfR)
@@ -218,6 +223,65 @@ Plot the PCA:
 ```
 s.class(pca.1$scores, pop(aa.genlight), xax=1, yax=2, col=transp(col,.6), ellipseSize=0, starSize=0, ppoints.cex=4, paxes.draw=T, pgrid.draw =F, xlab = "PC1", ylab = "PC2")
 ```
+This is what my first PCA looked like:
+
+![First PCA](Figures/first_pca.png)
+
+For reference, this figure from Marburger et al on 'Interspecific introgression mediates adaptation to whole genome duplication' shows information on ploidy and purity:
+
+![Marburger Plot](Figures/marburger_plot.png)
+
+At first it is difficult to see trends.
+
+Try colouring by ploidy:
+
+```
+ploidy_labels <- factor(ploidy(aa.genlight))
+s.class(pca.1$scores, ploidy_labels, xax=1, yax=2, col=transp(col,.6), ellipseSize=0, starSize=0, ppoints.cex=4, paxes.draw=T, pgrid.draw =F, xlab = "PC1", ylab = "PC2")
+```
+![Ploidy PCA](Figures/ploidy_pca.png)
+
+As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2 hybrids from pure lyrata.
+
+## Now lets run a PCA on only tetraploids
+
+### Filter your vcf with gatk via a HPC
+
+If your HPC already has gatk activate your gatk environment: ```conda activate /shared/apps/conda/bio2```
+
+Index your reference fasta file: ```samtools faidx [name_of_your_reference_file].fasta```
+
+Create a dictionary file from your reference fasta: ```gatk CreateSequenceDictionary -R [name_of_your_reference_file].fasta```
+
+Create a filtered .args file with the populations you wish to include (in this example I filter for only tetraploids): ```grep -o -E 'BZD-....|PEK-....|SCT-....|TEM-....|GYE-....|JOH-....|KAG-....|LIC-....|LOI-....|MAU-....|MOD-....|PIL-....|SCB-....|SWB-....|HAB-....|ROK-....|FRE-....|OCH-....|KEH-....' [name_of_your_vcf].vcf > tetraploid.args```
+
+Filter your vcf:
+```
+gatk SelectVariants -R [name_of_your_reference_file].fasta -V [name_of_your_vcf].vcf -sn tetraploid.args -O tetraploid.vcf 
+```
+### If you are using a HPC download the vcf via a web browser: 
+Create the webbrowser: ```python3 -m http.server 36895 ``` access your web address and download the file: ```http://[your_HPC_ip]:36895```
+
+Read in the vcf to R: ```vcf <- read.vcfR("tetraploid.vcf")```
+
+Convert to a genlight object:
+```
+aa.genlight <- vcfR2genlight.tetra(vcf)
+locNames(aa.genlight) <- paste(vcf@fix[,1],vcf@fix[,2],sep="_")
+pop(aa.genlight)<-substr(indNames(aa.genlight),1,3) 
+```
+Run a PCA and plot:
+```
+pca.2 <- glPcaFast(aa.genlight, nf=300)
+s.class(pca.2$scores, pop(aa.genlight), xax=1, yax=2, col=transp(col,.6), ellipseSize=0, starSize=0, ppoints.cex=4, paxes.draw=T, pgrid.draw =F, xlab = "PC1", ylab = "PC2")
+```
+![Tetraploid PCA](Figures/tetraploids_pca.png)
+
+
+
+
+
+
 
 
 
