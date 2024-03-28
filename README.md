@@ -536,3 +536,5 @@ allele_frequencies <- df$BZD
 ggplot(data=df, aes(x=allele_frequencies)) + geom_histogram(color='black',fill='white')
 ```
 ![BZD Histogram](Figures/BZD_histogram.png)
+
+# FAST STRUCTURE
