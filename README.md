@@ -504,6 +504,50 @@ upload your .tre file to the SplitsTree software which you can downlaod here: ht
 
 ![SplitsTree](Figures/SplitsTree.png)
 
+## fastSTRUCTURE
+In Terminal:
+
+Download the Cochlearia_create_structure_file.py script, make the 5kbthin_MAF2pct/ directory with the mkdir command, ensure you move the vcf file you want the script to run on into this directory. This will convert polyploids data to a format acceptable to fastSTRUCTURE.
+
+Now run:
+```
+python3 Cochlearia_create_structure_file.py -v 5kbthin_MAF2pct/ -o 5kbthin_MAF2pct -s true
+```
+This creates two files: '5kbthin_MAF2pct.StructureInpu.str' and '5kbthin_MAF2pct.StructureInputDiploidized.str' in a directory called 'vcf_to_str'
+
+Now remove the first and last lines of the file so that fastSTRUCTURE can run:
+```
+sed '1d;$d' 5kbthin_MAF2pct.StructureInputDiploidized.str > diploidized_filtered_tetraploids.str
+```
+Upload to HPC or environment which contains fastSTRUCTURE:
+```
+scp diploidized_filtered_tetraploids.str [username]@[HPC_ip_address]:~/
+```
+Activate your fastSTRUCTURE environment if this is your choice of methodology:
+```
+conda activate /shared/conda/faststructure
+```
+Run the fast structure command, this requires the structure.py script. Ensure that your input file doesn't have the '.str' file extension as the script handles this.
+```
+python2 /[pathway_to_file]/structure.py -K 1 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 2 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 3 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 4 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 5 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 6 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 7 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 8 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 9 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+python2 /[pathway_to_file]/structure.py -K 10 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+```
+Run the following command to discover the best value of k
+```
+python2 /shared/conda/faststructure/bin/chooseK.py --input=diploidized_filtered_tetraploids
+```
+The return I recieved:
+**Model complexity that maximizes marginal likelihood = 1**
+**Model components used to explain structure in data = 2**
+
 ## Histograms
 #### create a pops.txt file:
 ```
@@ -537,4 +581,3 @@ ggplot(data=df, aes(x=allele_frequencies)) + geom_histogram(color='black',fill='
 ```
 ![BZD Histogram](Figures/BZD_histogram.png)
 
-# FAST STRUCTURE
