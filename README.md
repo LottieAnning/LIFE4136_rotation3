@@ -5,6 +5,7 @@ This is the github page for rotation 3 of LIFE4136, exploring ploidy patterns in
 
 * **vcf** with all your samples
 * reference **fasta file** to which your reads were aligned to
+* **poly_freq.c** script provided above
 
 ## Load packages
 ```
@@ -365,6 +366,7 @@ Individuals such as KAG.03tl plot close to the arenosa end of the scale which is
 ![Annotated Individuals PCA](Figures/annotated_individuals_pca.png)
 
 Returning to gatk, filter out the impure individuals:
+# why impure!
 ```
 grep -o -E 'BZD-....|PEK-....|SCT-....|TEM-....|GYE-....|JOH-....|KAG-(01|02|04|05|06|07|08)..|LIC-....|LOI-....|MAU-....|MOD-....|PIL-....|SCB-....|SWB-....|HAB-....|ROK-....|FRE-(01|02|03|04|05|07)tl|OCH-(01|02|03|04|06|07|08)tl|KEH-(01|02|03|04|05)tl' Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf > filtered_tetraploid.args
 ```
@@ -503,24 +505,34 @@ upload your .tre file to the SplitsTree software which you can downlaod here: ht
 ![SplitsTree](Figures/SplitsTree.png)
 
 ## Histograms
-#create pops.txt file:
+#### create a pops.txt file:
+```
 individual_names <- indNames(aa.genlight)
 populations <- as.character(pop(aa.genlight))
 data <- data.frame(individual_names, populations)
 write.table(data, "pops.txt", sep = "\t", row.names = FALSE, col.names = FALSE)
+```
+This will create a tab deliminated file with the individual name and their population
 
-#in unix:
-#sed 's/"//g' pops.txt > output.txt   #removes all the ""
-# ./poly_freq -vcf Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf -pops pops.txt > info.tsv
-#Kept 57613 variants
+#### In a Unix environment:
+```
+sed 's/"//g' pops.txt > output.txt   #removes all the ""
+gcc poly_freq.c -o poly_freq -lm
+ ./poly_freq -vcf [title_of_your_vcf].vcf -pops pops.txt > info.tsv
+```
+This will create a file with population-specific allele frequencies
+n.b. poly_freq.c script is required here
 
-# read in the tsv. You should have piped the output from poly freq to a 'file.tsv' 
+#### Read in the tsv. in R you should have piped the output from poly freq to a 'file.tsv' 
+```
 df <- read.table(file ='info.tsv' ,header = TRUE,sep = '\t')
-
-# store allele frequencies of the population you want to plot in a variable
+```
+#### Store allele frequencies of the population you want to plot in a variable
+```
 allele_frequencies <- df$BZD
-
-# plot a histogram of the results
-ggplot(data=df, aes(x=allele_frequencies)) +
-  geom_histogram(color='black',fill='white')
-
+```
+#### plot a histogram of the results
+```
+ggplot(data=df, aes(x=allele_frequencies)) + geom_histogram(color='black',fill='white')
+```
+![BZD Histogram](Figures/BZD_histogram.png)
