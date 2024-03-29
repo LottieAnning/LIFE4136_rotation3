@@ -598,6 +598,7 @@ Now plot:
 ggplot(data = filtered_df, aes(Mean_AF)) +
   geom_histogram(color='black',fill='white', bins = 100)
 ```
+![Synthetic Plots](Figures/synthetic.png)
 
 
 
