@@ -562,8 +562,50 @@ cat structure_plot.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > structure_plot.cs
 #### In Structure Plot V2.0:
 Upload your csv and select the K value you used. Plot by 'Ind Labels' which plots by population??
 
-## Histograms
-#### create a pops.txt file:
+## histograms
+#### First create a synthetic allotetraploid
+We know from previous research by Yant et al. that allo**hexaploids** plot on a histogram like such:
+![Example Allo/AutoPolyploids](Figures/auto:allo-ploids.png)
+**Autohexaploids** plot right skewed, as the most frequent allele frequency (plotted on the x-axis) are the close to 0 frequecnies as theses are the random SNPs. **Allohexaploids** plot with a central spike as ...
+
+However these are hexaploids and the sames we are looking at are tetraploids. To avoid potential overlooking of data, it is best to create a synthetic allotetraploid to compare the sample data with.
+
+Using the files 'arenosa_632.txt' and 'lyrata_272_with_some_hybrids.txt' which contain mostly tetraploid data of arenosa and lyrata samples:
+
+Read the data in:
+```
+arenosa_632 <- read.table(file ='arenosa_632.txt' ,header = TRUE,sep = '\t')
+lyrata_272 <- read.table(file ='lyrata_272_with_some_hybrids.txt' ,header = TRUE,sep = '\t')
+```
+Merge the two data frames based on the 'POS' column:
+```
+merged_df <- merge(arenosa_632, lyrata_272, by = "POS", suffixes = c("_arenosa", "_lyrata"))
+```
+Calculate the mean of the 'AF' column for matching rows:
+```
+merged_df$Mean_AF <- (merged_df$AF_arenosa + merged_df$AF_lyrata) / 2
+```
+Create a new data frame with 'POS' and 'Mean_AF':
+```
+new_df <- merged_df[, c("POS", "Mean_AF")]
+```
+After plotting, the uncommon SNPs mask potential trends in the data, so filter by mean allele frequency greater than 0.1:
+```
+filtered_df <- new_df[new_df$Mean_AF > 0.1, ]
+```
+Now plot:
+```
+ggplot(data = filtered_df, aes(Mean_AF)) +
+  geom_histogram(color='black',fill='white', bins = 100)
+```
+
+
+
+
+
+
+
+#### In R - create a pops.txt file:
 ```
 individual_names <- indNames(aa.genlight)
 populations <- as.character(pop(aa.genlight))
@@ -579,7 +621,7 @@ gcc poly_freq.c -o poly_freq -lm
  ./poly_freq -vcf [title_of_your_vcf].vcf -pops pops.txt > info.tsv
 ```
 This will create a file with population-specific allele frequencies
-n.b. poly_freq.c script is required here
+n.b. poly_freq.c script is required here (the script contains set up information)
 
 #### Read in the tsv. in R you should have piped the output from poly freq to a 'file.tsv' 
 ```
