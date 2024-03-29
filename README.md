@@ -1,7 +1,7 @@
-# LIFE4136_rotation3
-This is the github page for rotation 3 of LIFE4136, exploring ploidy patterns in European Arabidopsis lyrata.
+# LIFE4136 Rotation 3
+This is the github page for rotation 3 of LIFE4136, exploring ploidy patterns in European Arabidopsis lyrata. Specifically investigating trends which highlight if a sample population is an allopolyploid or autopolyploid.
 
-## Files required
+## Files required:
 
 * **vcf** with all your samples
 * reference **fasta file** to which your reads were aligned to
