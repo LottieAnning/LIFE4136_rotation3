@@ -505,7 +505,7 @@ upload your .tre file to the SplitsTree software which you can downlaod here: ht
 ![SplitsTree](Figures/SplitsTree.png)
 
 ## fastSTRUCTURE
-In Terminal:
+#### In Terminal:
 
 Download the Cochlearia_create_structure_file.py script, make the 5kbthin_MAF2pct/ directory with the mkdir command, ensure you move the vcf file you want the script to run on into this directory. This will convert polyploids data to a format acceptable to fastSTRUCTURE.
 
@@ -546,7 +546,17 @@ python2 /shared/conda/faststructure/bin/chooseK.py --input=diploidized_filtered_
 ```
 The return I recieved:
 **Model complexity that maximizes marginal likelihood = 1**
+
 **Model components used to explain structure in data = 2**
+
+Now create an output file to visualise the results:
+```
+paste -d '\t' pops.txt diploidized_filtered_tetraploids.3.meanQ > structure_plot.tsv
+cat structure_plot.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > structure_plot.csv
+```
+
+#### In Structure Plot V2.0:
+Upload your csv and select the K value you used. Plot by 'Ind Labels' which plots by population??
 
 ## Histograms
 #### create a pops.txt file:
