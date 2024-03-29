@@ -1,13 +1,15 @@
 # LIFE4136 Rotation 3
 This is the github page for rotation 3 of LIFE4136, exploring ploidy patterns in European Arabidopsis lyrata. Specifically investigating trends which highlight if a sample population is an allopolyploid or autopolyploid.
 
+The below code is to be ran in alternating R, python and C environments
+
 ## Files required:
 
 * **vcf** with all your samples
 * reference **fasta file** to which your reads were aligned to
-* **poly_freq.c** script provided above
+* scripts provided above
 
-## Load packages
+## In R - load packages:
 ```
 library(vcfR)
 library(adegenet)
@@ -18,18 +20,18 @@ library(ggplot2)
 library(ggrepel)
 library(StAMPP)
 ```
-## Set working directory
+## Set working directory:
 ```
 setwd("[path_to_working_directory]")
 ```
-## Read in vcf
+## Read in vcf:
 ```
-vcf <- read.vcfR("[title_of_vcf].vcf.gz")
+vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
 ## Run initial pca
-This will allow for the discovery of potential trends in your data
+This will allow for the discovery of potential trends in your data and allow for preliminary visualisation.
 ### Convert vcf into a genlight object
-first create the function:
+First create the function:
 ```
 vcfR2genlight.tetra <- function (x, n.cores = 1) 
 {
@@ -78,11 +80,13 @@ vcfR2genlight.tetra <- function (x, n.cores = 1)
   return(x)
 }
 ```
-run the conversion:
+Run the conversion:
 ```
 aa.genlight <- vcfR2genlight.tetra(vcf)
 ```
-warnings may occur after this line, you can use the warnings() function to view the specifics, in my initial run 31 warnings occured all of which returned 'In initialize(value, ...) : NAs introduced by coercion' meaning there was missing data in the vcf so NA values are introduced. You can inspect your VCF file to identify any missing or unexpected data that might be causing the issue, however at this stage the code can handle missing values and visualisation will still show trends.
+Warnings may occur after this line, you can use the **warnings()** function to view the specifics, in my initial run 31 warnings occured all of which returned 'In initialize(value, ...) : NAs introduced by coercion' meaning there was missing data in the vcf so NA values are introduced. You can inspect your VCF file to identify any missing or unexpected data that might be causing the issue, however at this stage the code can handle missing values and visualisation will still show trends.
+
+Create individual id's and population names:
 ```
 locNames(aa.genlight) <- paste(vcf@fix[,1],vcf@fix[,2],sep="_")
 pop(aa.genlight)<-substr(indNames(aa.genlight),1,3) 
@@ -245,7 +249,7 @@ s.class(pca.1$scores, ploidy_labels, xax=1, yax=2, col=transp(col,.6), ellipseSi
 
 As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2 hybrids from pure lyrata.
 
-## Now lets run a PCA on only tetraploids
+## Now lets run a PCA on only tetraploids:
 
 ### Filter your vcf with gatk via a HPC
 
