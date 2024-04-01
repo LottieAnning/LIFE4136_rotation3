@@ -3,6 +3,11 @@ This is the github page for rotation 3 of LIFE4136, exploring ploidy patterns in
 
 The below code is to be ran in alternating R, python and C environments
 
+## Dependencies:
+* Python
+* R
+* Conda
+
 ## Files required:
 
 * **vcf** with all your samples
@@ -19,7 +24,9 @@ library(dplyr)
 library(ggplot2)
 library(ggrepel)
 library(StAMPP)
+library(leaflet)
 ```
+If any errors occur this may be because your R doesn't have the packages installed, if so use the **install.packages()** function - put the package name in the brackets.
 ## Set working directory:
 ```
 setwd("[path_to_working_directory]")
@@ -233,7 +240,7 @@ This is what my first PCA looked like:
 
 ![First PCA](Figures/first_pca.png)
 
-For reference, this figure from Marburger et al on 'Interspecific introgression mediates adaptation to whole genome duplication' shows information on ploidy and purity:
+For reference, this figure from Marburger et al on 'Interspecific introgression mediates adaptation to whole genome duplication' shows some information on ploidy and purity (not all populations are included in this paper):
 
 ![Marburger Plot](Figures/marburger_plot.png)
 
@@ -247,13 +254,17 @@ s.class(pca.1$scores, ploidy_labels, xax=1, yax=2, col=transp(col,.6), ellipseSi
 ```
 ![Ploidy PCA](Figures/ploidy_pca.png)
 
-As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2 hybrids from pure lyrata.
+As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2 hybrids from pure lyrata. However, this isnt a perfect pattern, many diploids cluster positively with PC1 (with the tetraploids). Furthermore, the tetraploids include hybrids (mixture of lyrata and arenosa) and a population genetically similar to arenosa (KEH). In the diploid population there are only pure lyrata, this means that the PCA could be unbalanced as there are no arenosa diploids to balance out the arenosa tetraploids.
 
 ## Now lets run a PCA on only tetraploids:
 
-### Filter your vcf with gatk via a HPC
+### Filter your vcf with gatk 
 
-If your HPC already has gatk activate your gatk environment: ```conda activate /shared/apps/conda/bio2```
+You can dowload gatk using the instructions provided here: https://github.com/broadinstitute/gatk?tab=readme-ov-file#downloading **warning** this is a large package, if you have access to a HPC it would be better to run this section on that.
+
+Create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```
+
+Activate your gatk environment: ```conda activate /[path_to_virtual_environment]/[virtual_environment_name]```
 
 Index your reference fasta file: ```samtools faidx [name_of_your_reference_file].fasta```
 
@@ -265,11 +276,16 @@ Filter your vcf:
 ```
 gatk SelectVariants -R [name_of_your_reference_file].fasta -V [name_of_your_vcf].vcf -sn tetraploid.args -O tetraploid.vcf 
 ```
+
+Deactivate your gatk environment: ```conda deactivate```
 ### If you are using a HPC download the vcf via a web browser: 
 Create the webbrowser: ```python3 -m http.server 36895 ``` access your web address and download the file: ```http://[your_HPC_ip]:36895```
 
-Read in the vcf to R: ```vcf <- read.vcfR("tetraploid.vcf")```
-
+### In R:
+Read in the vcf: 
+```
+vcf <- read.vcfR("tetraploid.vcf")
+```
 Convert to a genlight object:
 ```
 aa.genlight <- vcfR2genlight.tetra(vcf)
@@ -283,7 +299,40 @@ s.class(pca.2$scores, pop(aa.genlight), xax=1, yax=2, col=transp(col,.6), ellips
 ```
 ![Tetraploid PCA](Figures/tetraploids_pca.png)
 
-For further analysis you can plot the PCA by individuals:
+Again PC1 seperates pure lyrata (left) from hybrids (centre) and populations closer to arenosa (right) and PC2 is potentially seperating populations via geography.
+
+#### To test if PC2 is seperating populations you can use the leaflet() package:
+```
+mymap <- leaflet() %>%
+  setView(lng = 15.2551, lat = 50, zoom = 5) %>%
+  addTiles()
+
+mymap <- mymap %>% addMarkers(lng = 14.722019, lat = 50.533611, popup = "BZD")
+mymap <- mymap %>% addMarkers(lng = 10.582812, lat = 51.583498, popup = "SCT")
+mymap <- mymap %>% addMarkers(lng = 16.248345, lat = 49.090359, popup = "TEM")
+mymap <- mymap %>% addMarkers(lng = 14.482233, lat = 50.116151, popup = "PEK")
+mymap <- mymap %>% addMarkers(lng = 15.611308, lat = 47.876394, popup = "OCH")
+mymap <- mymap %>% addMarkers(lng = 17.285185, lat = 46.773573, popup = "GYE")
+mymap <- mymap %>% addMarkers(lng = 16.038565, lat = 47.780388, popup = "JOH")
+mymap <- mymap %>% addMarkers(lng = 15.426401, lat = 48.294661, popup = "KAG")
+mymap <- mymap %>% addMarkers(lng = 16.269984, lat = 48.092981, popup = "LIC")
+mymap <- mymap %>% addMarkers(lng = 15.552699, lat = 48.396128, popup = "LOI")
+mymap <- mymap %>% addMarkers(lng = 15.560472, lat = 48.381430, popup = "MAU")
+mymap <- mymap %>% addMarkers(lng = 16.267199, lat = 48.079485, popup = "MOD")
+mymap <- mymap %>% addMarkers(lng = 15.349241, lat = 48.239088, popup = "PIL")
+mymap <- mymap %>% addMarkers(lng = 15.475190, lat = 48.389408, popup = "SCB")
+mymap <- mymap %>% addMarkers(lng = 15.475190, lat = 48.389408, popup = "SWB")
+mymap <- mymap %>% addMarkers(lng = 15.698451, lat = 47.937742, popup = "HAB")
+mymap <- mymap %>% addMarkers(lng = 15.475190, lat = 48.389408, popup = "ROK")
+mymap <- mymap %>% addMarkers(lng = 15.475190, lat = 48.389408, popup = "FRE")
+mymap <- mymap %>% addMarkers(lng = 15.542146, lat = 47.816197, popup = "KEH")
+
+mymap
+```
+![Annotated Map](Figures/annotated_map.png)
+
+
+#### For further analysis you can plot the PCA by individuals:
 ```
 df <- extract.gt(vcf)
 df[df == "0|0"] <- 0
@@ -365,7 +414,8 @@ ggplot(pcs, aes(PC1, PC2, color=as.factor(ploidy))) +
 ```
 ![Individuals PCA](Figures/individuals_pca.png)
 
-Individuals such as KAG.03tl plot close to the arenosa end of the scale which is incoorect as we know its pure lyrata. The below figure shows the other tainted individuals:
+#### Filter out impure individuals
+From observation alone it is clear to see that some individuals are plotting incorrectly. Individuals such as KAG.03tl plot close to the arenosa end of the scale which is incorrect as we know its pure lyrata. The below figure shows the other tainted individuals:
 
 ![Annotated Individuals PCA](Figures/annotated_individuals_pca.png)
 
