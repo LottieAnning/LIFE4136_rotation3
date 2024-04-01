@@ -84,7 +84,7 @@ Run the conversion:
 ```
 aa.genlight <- vcfR2genlight.tetra(vcf)
 ```
-Warnings may occur after this line, you can use the **warnings()** function to view the specifics, in my initial run 31 warnings occured all of which returned 'In initialize(value, ...) : NAs introduced by coercion' meaning there was missing data in the vcf so NA values are introduced. You can inspect your VCF file to identify any missing or unexpected data that might be causing the issue, however at this stage the code can handle missing values and visualisation will still show trends.
+Warnings may occur after this line, you can use the **warnings()** function to view the specifics, in my initial run 31 warnings occured all of which returned: 'In initialize(value, ...) : NAs introduced by coercion' meaning there was missing data in the vcf so NA values are introduced. You can inspect your VCF file to identify any missing or unexpected data that might be causing the issue, however at this stage the code can handle missing values and visualisation will still show trends.
 
 Create individual id's and population names:
 ```
