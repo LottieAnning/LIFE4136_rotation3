@@ -1,12 +1,17 @@
 # LIFE4136 Rotation 3
 This is the github page for rotation 3 of LIFE4136, exploring ploidy patterns in European Arabidopsis lyrata. Specifically investigating trends which highlight if a sample population is an allopolyploid or autopolyploid. For further information visit the Marburger et al paper at: https://www.nature.com/articles/s41467-019-13159-5.
 
-The below code is to be ran in alternating R, python and C environments
+The below code is to be ran in alternating R, python and UNIX environments
 
 ## Dependencies:
-* Python
-* R
+* R, version 4.3.3
+* Python 2 and 3
+* UNIX
+* gatk
 * Conda
+* Splits tree
+* fastStructure
+* structure plot?
 
 ## Files required:
 
@@ -35,7 +40,7 @@ setwd("[path_to_working_directory]")
 ```
 vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
-## Run initial pca
+## Run initial PCA
 This will allow for the discovery of potential trends in your data and allow for preliminary visualisation.
 ### Convert vcf into a genlight object
 First create the function:
@@ -240,7 +245,7 @@ This is what my first PCA looked like:
 
 ![First PCA](Figures/first_pca.png)
 
-For reference, this figure from Marburger et al on 'Interspecific introgression mediates adaptation to whole genome duplication' shows some information on ploidy and purity (not all populations are included in this paper):
+For reference, this figure from the Marburger paper *(linked at the top of the page)* shows some information on ploidy and purity of the data I am looking at (not all populations are included in this paper):
 
 ![Marburger Plot](Figures/marburger_plot.png)
 
@@ -258,7 +263,7 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 ## Now lets run a PCA on only tetraploids:
 
-### Filter your vcf with gatk 
+### Filter your vcf with gatk - in a UNIX environment
 
 You can dowload gatk using the instructions provided here: https://github.com/broadinstitute/gatk?tab=readme-ov-file#downloading **warning** this is a large package, if you have access to a HPC it would be better to run this section on that.
 
@@ -276,8 +281,8 @@ Filter your vcf:
 ```
 gatk SelectVariants -R [name_of_your_reference_file].fasta -V [name_of_your_vcf].vcf -sn tetraploid.args -O tetraploid.vcf 
 ```
-
 Deactivate your gatk environment: ```conda deactivate```
+
 ### If you are using a HPC download the vcf via a web browser: 
 Create the webbrowser: ```python3 -m http.server 36895 ``` access your web address and download the file: ```http://[your_HPC_ip]:36895```
 
@@ -559,7 +564,7 @@ upload your .tre file to the SplitsTree software which you can downlaod here: ht
 ![SplitsTree](Figures/SplitsTree.png)
 
 ## fastSTRUCTURE
-#### In Terminal:
+#### In a UNIX environment:
 
 Download the Cochlearia_create_structure_file.py script, make the 5kbthin_MAF2pct/ directory with the mkdir command, ensure you move the vcf file you want the script to run on into this directory. This will convert polyploids data to a format acceptable to fastSTRUCTURE.
 
