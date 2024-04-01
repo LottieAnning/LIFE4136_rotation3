@@ -330,7 +330,7 @@ mymap <- mymap %>% addMarkers(lng = 15.542146, lat = 47.816197, popup = "KEH")
 mymap
 ```
 ![Annotated Map](Figures/annotated_map.png)
-
+I have annotated the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK. GYE is further South from the sample cluster, however, it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
 
 #### For further analysis you can plot the PCA by individuals:
 ```
