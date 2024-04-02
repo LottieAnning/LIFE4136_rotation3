@@ -6,23 +6,25 @@ Arabidopsis arenosa is the sister species of Arabidopsis lyrata, both species ex
 The below code is to be ran in alternating R, python and UNIX environments
 
 ## Dependencies:
-* To run *Principle Component Analysis*, *Sample Mapping*, *Nei's Distance Calculations* and *Allele Frequency Plots* R Studio version 4.3.3 is needed, this can be downloaded here: https://cran.r-project.org/mirrors.html, simply navigate to your country and select the package compatible for your machiene. Secondary to this, the following R packages need to be installed for the code to run:
-  *   adegenet version 2.1.10 or higher, simply install by typing: ```install.pacakges(adegenet)``` into the R command line
-  *   adegraphics version 1.0.21 or higher, simply install by typing: ```install.pacakges(adegraphics)``` into the R command line
-  *   dplyr version 1.1.4 or higher, simply install by typing: ```install.pacakges(dplyr)``` into the R command line
-  *   ggplot2 version 3.4.4 or higher, simply install by typing: ```install.pacakges(ggplot2)``` into the R command line
-  *   ggrepel version 0.9.5 or higher, simply install by typing: ```install.pacakges(ggrepel)``` into the R command line
-  *   leaflet version 2.2.1 or higher, simply install by typing: ```install.pacakges(leaflet)``` into the R command line
-  *   StAMPP version 1.6.3 or higher, simply install by typing: ```install.pacakges(StAMPP)``` into the R command line
-  *   tidyr version 1.3.0 or higher, simply install by typing: ```install.pacakges(tidyr)``` into the R command line
-  *   vcfR version 1.15.0 or higher, simply install by typing: ```install.pacakges(vcfR)``` into the R command line
-* Python 2 and 3
-* UNIX
-* gatk
-* Conda
-* Splits tree
-* fastStructure
-* structure plot?
+* To run *Principle Component Analysis*, *Sample Mapping*, *Nei's Distance Calculations* and *Allele Frequency Plots* **R Studio version 4.3.3** is needed, this can be downloaded here: https://cran.r-project.org/mirrors.html, simply navigate to your country and select the package compatible for your machiene. Secondary to this, the following R packages need to be installed for the code to run:
+  * **adegenet** version 2.1.10 or higher, simply install by typing: ```install.pacakges(adegenet)``` into the R command line
+  * **adegraphics** version 1.0.21 or higher, simply install by typing: ```install.pacakges(adegraphics)``` into the R command line
+  * **dplyr** version 1.1.4 or higher, simply install by typing: ```install.pacakges(dplyr)``` into the R command line
+  * **ggplot2** version 3.4.4 or higher, simply install by typing: ```install.pacakges(ggplot2)``` into the R command line
+  * **ggrepel** version 0.9.5 or higher, simply install by typing: ```install.pacakges(ggrepel)``` into the R command line
+  * **leaflet** version 2.2.1 or higher, simply install by typing: ```install.pacakges(leaflet)``` into the R command line
+  * **StAMPP** version 1.6.3 or higher, simply install by typing: ```install.pacakges(StAMPP)``` into the R command line
+  * **tidyr** version 1.3.0 or higher, simply install by typing: ```install.pacakges(tidyr)``` into the R command line
+  * **vcfR** version 1.15.0 or higher, simply install by typing: ```install.pacakges(vcfR)``` into the R command line
+* To run the *structure.py* and *chooseK.py* scripts for *fastStructure* **Python version 2.7.18** is required along with:
+  * .
+* To run the *Cochlearia_create_structure_file.py* script for *fastStructure* and *downloading files from a High Power Computer (HPC)* **Python version 3.8.12** is required along with:
+  * .
+* To run *gatk* **version 4.2.2.0** is required which can be downloaded here: https://github.com/broadinstitute/gatk/releases, however a HPC with an existing version is recommended as this is a large pacakge. Other dependencies are:
+  * **Conda version 23.11.0**
+  * **SAMtools version 1.19.2** which can be downloaded here: https://www.htslib.org/download/
+* To plot the *Neighbour Joining (NJ) Trees* **Splits tree of version 6.2.2-beta** is required which can be downloaded at:	https://github.com/husonlab/splitstree6
+* **structure plot?**
 
 ## Files required:
 
