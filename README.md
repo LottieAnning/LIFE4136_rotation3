@@ -7,17 +7,15 @@ The below code is to be ran in alternating R, python and UNIX environments
 
 ## Dependencies:
 * To run *Principle Component Analysis*, *Sample Mapping*, *Nei's Distance Calculations* and *Allele Frequency Plots* R Studio version 4.3.3 is needed, this can be downloaded here: https://cran.r-project.org/mirrors.html, simply navigate to your country and select the package compatible for your machiene. Secondary to this, the following R packages need to be installed for the code to run:
-  *   adegenet version 2.1.10 or higher
-  *   adegraphics version 1.0.21 or higher
-  *   dplyr version 1.1.4 or higher
-  *   ggplot2 version 3.4.4 or higher
-  *   ggrepel version 0.9.5 or higher
-  *   leaflet version 2.2.1 or higher
-  *   StAMPP version 1.6.3 or higher
-  *   tidyr version 1.3.0 or higher
-  *   vcfR version 1.15.0 or higher
-![image](https://github.com/LottieAnning/LIFE4136_rotation3/assets/151543431/39ff5a37-4177-4d0f-96c4-90fdd8916d8f)
-
+  *   adegenet version 2.1.10 or higher, simply install by typing: ```install.pacakges(adegenet)``` into the R command line
+  *   adegraphics version 1.0.21 or higher, simply install by typing: ```install.pacakges(adegraphics)``` into the R command line
+  *   dplyr version 1.1.4 or higher, simply install by typing: ```install.pacakges(dplyr)``` into the R command line
+  *   ggplot2 version 3.4.4 or higher, simply install by typing: ```install.pacakges(ggplot2)``` into the R command line
+  *   ggrepel version 0.9.5 or higher, simply install by typing: ```install.pacakges(ggrepel)``` into the R command line
+  *   leaflet version 2.2.1 or higher, simply install by typing: ```install.pacakges(leaflet)``` into the R command line
+  *   StAMPP version 1.6.3 or higher, simply install by typing: ```install.pacakges(StAMPP)``` into the R command line
+  *   tidyr version 1.3.0 or higher, simply install by typing: ```install.pacakges(tidyr)``` into the R command line
+  *   vcfR version 1.15.0 or higher, simply install by typing: ```install.pacakges(vcfR)``` into the R command line
 * Python 2 and 3
 * UNIX
 * gatk
