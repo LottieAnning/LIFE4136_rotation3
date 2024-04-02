@@ -1,10 +1,12 @@
 # LIFE4136 Rotation 3
-This is the github page for rotation 3 of LIFE4136, exploring ploidy patterns in European Arabidopsis lyrata. Specifically investigating trends which highlight if a sample population is an allopolyploid or autopolyploid. For further information visit the Marburger et al paper at: https://www.nature.com/articles/s41467-019-13159-5.
+This is the github page for rotation 3 of LIFE4136, exploring ploidy and purity patterns in European Arabidopsis lyrata. Further to the work completed by Marburger et al., in 2019 (paper accessed here: https://www.nature.com/articles/s41467-019-13159-5) the contents of this repository specifically investigate trends which highlight if a sample population is an allopolyploid or autopolyploid. This research is to support the further investigation currently being completed by their team in whether alloploidy (attained via interspecific hybridisation) aids in stabilising meiosis and other processes that are disturbed during whole genome duplication (WGD). 
+
+Arabidopsis arenosa is the sister species of Arabidopsis lyrata, both species exist in diploid and tetraploid states, Arabidopsis arenosa underwent WGD before Arabidopsis lyrata and such the hybridization of neo Arabidopsis lyrata tetraploids with Arabidopsis arenosa aided in the stabilisation of cell division. This happens because certain genes that are important for meiosis, as well as other cellular processes affected by WGD, are exchanged between different plant varieties during hybridization.
 
 The below code is to be ran in alternating R, python and UNIX environments
 
 ## Dependencies:
-* R, version 4.3.3
+* To run principle component analysis R, version 4.3.3
 * Python 2 and 3
 * UNIX
 * gatk
