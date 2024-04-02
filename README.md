@@ -6,7 +6,7 @@ Arabidopsis arenosa is the sister species of Arabidopsis lyrata, both species ex
 The below code is to be ran in alternating R, python and UNIX environments
 
 ## Dependencies:
-* To run *Principle Component Analysis*, *Sample Mapping*, *Nei's Distance Calculations* and *Allele Frequency Plots* **R Studio version 4.3.3** is needed, this can be downloaded here: https://cran.r-project.org/mirrors.html, simply navigate to your country and select the package compatible for your machiene. Secondary to this, the following R packages need to be installed for the code to run:
+* To run *Principle Component Analysis*, *Sample Mapping*, *Nei's Distance Calculations* and *Allele Frequency Plots* **R Studio version 4.3.3** is needed, this can be downloaded here: https://cran.r-project.org/mirrors.html, simply navigate to your country and select the package compatible for your machine. Secondary to this, the following R packages need to be installed for the code to run:
   * **adegenet** version 2.1.10 or higher, simply install by typing: ```install.pacakges(adegenet)``` into the R command line
   * **adegraphics** version 1.0.21 or higher, simply install by typing: ```install.pacakges(adegraphics)``` into the R command line
   * **dplyr** version 1.1.4 or higher, simply install by typing: ```install.pacakges(dplyr)``` into the R command line
@@ -30,7 +30,6 @@ The below code is to be ran in alternating R, python and UNIX environments
 
 * **vcf** with all your samples
 * reference **fasta file** to which your reads were aligned to
-* scripts provided above
 
 ## In R - load packages:
 ```
@@ -44,7 +43,6 @@ library(ggrepel)
 library(StAMPP)
 library(leaflet)
 ```
-If any errors occur this may be because your R doesn't have the packages installed, if so use the **install.packages()** function - put the package name in the brackets.
 ## Set working directory:
 ```
 setwd("[path_to_working_directory]")
