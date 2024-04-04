@@ -5,13 +5,20 @@ Arabidopsis arenosa is the sister species of Arabidopsis lyrata, both species ex
 
 The below code is to be ran in alternating R, python and UNIX environments
 
-## Contents:
-[Dependencies](#dependencies)  
-[Emphasis](#emphasis)  
+## Contents
+[Dependencies](#dependencies) 
+[Files Required](#files_required)
+- [Loading packages in R] (#loading_packages_in_r)
+[Initial Visualisation of Data](#initial_visualisation_of_data)  
+[Filter Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)  
+[Relatedness Calculations](#relatedness_calculations)  
+[Fast Structure](#fast_structure)
+[Allele Frequency Spectrum](#allele_frequency_spectrum)  
+
 <a name="headers"/>
 
-## Dependencies:
-* To run *Principle Component Analysis*, *Sample Mapping*, *Nei's Distance Calculations* and *Allele Frequency Plots* **R Studio version 4.3.3** is needed, this can be downloaded here: https://cran.r-project.org/mirrors.html, simply navigate to your country and select the package compatible for your machine. Secondary to this, the following R packages need to be installed for the code to run:
+## Dependencies
+* To run *Principle Component Analysis*, *Sample Mapping*, *Nei's Distance Calculations* and *Allele Frequency Spectrum Plots* **R Studio version 4.3.3** is needed, this can be downloaded here: https://cran.r-project.org/mirrors.html, simply navigate to your country and select the package compatible for your machine. Secondary to this, the following R packages need to be installed for the code to run:
   * **adegenet** version 2.1.10 or higher, simply install by typing: ```install.pacakges(adegenet)``` into the R command line
   * **adegraphics** version 1.0.21 or higher, simply install by typing: ```install.pacakges(adegraphics)``` into the R command line
   * **dplyr** version 1.1.4 or higher, simply install by typing: ```install.pacakges(dplyr)``` into the R command line
@@ -31,12 +38,13 @@ The below code is to be ran in alternating R, python and UNIX environments
 * To plot the *Neighbour Joining (NJ) Trees* **Splits tree of version 6.2.2-beta** is required which can be downloaded at:	https://github.com/husonlab/splitstree6
 * **structure plot?**
 
-## Files required:
+## Files Required
 
 * **vcf** with all your samples
 * reference **fasta file** to which your reads were aligned to
 
-## In R - load packages:
+## Initial Visualisation of Data
+### Loading packages in R:
 ```
 library(vcfR)
 library(adegenet)
@@ -48,16 +56,14 @@ library(ggrepel)
 library(StAMPP)
 library(leaflet)
 ```
-## Set working directory:
+### Set working directory:
 ```
 setwd("[path_to_working_directory]")
 ```
-## Read in vcf:
+### Read in vcf:
 ```
 vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
-## Run initial PCA
-This will allow for the discovery of potential trends in your data and allow for preliminary visualisation.
 ### Convert vcf into a genlight object
 First create the function:
 ```
@@ -131,7 +137,9 @@ If you want to see the populations and number of them, run: ```unique(pop(aa.gen
 
 If you want to see the variety of ploidy in sample, run: ```unique(ploidy(aa.genlight))```
 
-### Run the PCA
+### Run an initial PCA:
+This will allow for the discovery of potential trends in your data and allow for preliminary visualisation.
+
 Define the PCA function:
 ```
 glPcaFast <- function(x,
@@ -277,11 +285,9 @@ s.class(pca.1$scores, ploidy_labels, xax=1, yax=2, col=transp(col,.6), ellipseSi
 
 As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2 hybrids from pure lyrata. However, this isnt a perfect pattern, many diploids cluster positively with PC1 (with the tetraploids). Furthermore, the tetraploids include hybrids (mixture of lyrata and arenosa) and a population genetically similar to arenosa (KEH). In the diploid population there are only pure lyrata, this means that the PCA could be unbalanced as there are no arenosa diploids to balance out the arenosa tetraploids.
 
-## Now lets run a PCA on only tetraploids:
+## Filter Data for Further Analysis of Trends
 
-### Filter your vcf with gatk - in a UNIX environment
-
-You can dowload gatk using the instructions provided here: https://github.com/broadinstitute/gatk?tab=readme-ov-file#downloading **warning** this is a large package, if you have access to a HPC it would be better to run this section on that.
+### Filter your vcf with gatk - in a UNIX environment:
 
 Create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```
 
@@ -353,7 +359,7 @@ mymap
 ![Annotated Map](Figures/annotated_map.png)
 I have annotated the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK. GYE is further South from the sample cluster, however, it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
 
-#### For further analysis you can plot the PCA by individuals:
+### For further analysis you can plot the PCA by individuals:
 ```
 df <- extract.gt(vcf)
 df[df == "0|0"] <- 0
@@ -435,7 +441,7 @@ ggplot(pcs, aes(PC1, PC2, color=as.factor(ploidy))) +
 ```
 ![Individuals PCA](Figures/individuals_pca.png)
 
-#### Filter out impure individuals
+### Filter out impure individuals
 From observation alone it is clear to see that some individuals are plotting incorrectly. Individuals such as KAG.03tl plot close to the arenosa end of the scale which is incorrect as we know its pure lyrata. The below figure shows the other tainted individuals:
 
 ![Annotated Individuals PCA](Figures/annotated_individuals_pca.png)
@@ -537,22 +543,16 @@ ggplot(pcs, aes(PC1, PC2, color=as.factor(ploidy))) +
 
 It is known that PC1 splits inidividuals closest to arenosa (left), hybrids (central) and pure lyrata (right), however it is slightly unclear what PC2 annotates. For example, why does BZD cluster on its own?
 
-## Calculate Nei's distances
+## Relatedness Calculations
+
+### Calculate Nei's distances
 Create a matrix of pairwise distances for **individuals**:
 ```
 aa.D.ind <- stamppNeisD(aa.genlight, pop = FALSE)
 ```
-Export matrix - for SplitsTree
-```
-stamppPhylip(aa.D.ind, file="aa.indiv_Neis_distance_4ds.phy.dst")
-```
 Create a matrix of pairwise distances for **populations**:
 ```
 aa.D.pop <- stamppNeisD(aa.genlight, pop = TRUE)
-```
-Export matrix - for SplitsTree
-```
-stamppPhylip(aa.D.pop, file="aa.pops_Neis_distance_4ds.phy.dst") 
 ```
 Create the dist objects:
 ```
@@ -564,23 +564,27 @@ colnames(aa.D.pop) <- rownames(aa.D.pop)
 aa.D.pop.dist <-as.dist(aa.D.pop, diag=T)
 attr(aa.D.pop.dist, "Labels") <-rownames(aa.D.pop)
 ```
-Plot and save NJ tree
+Plot and save the Neighbour Joining (NJ) tree:
 ```
 plot(nj(aa.D.ind), typ="unrooted", cex=0.7)
 title(expression("Neighbour-joining tree of distance-based analysis of "*italic(Arabidposis)*" "))
-write.tree(nj(aa.D.ind),file="NJ.distance_tree_outgroups.tre")
+write.tree(nj(aa.D.pop),file="NJ.distance_tree_outgroups.tre")
 ```
-The plot of the NJ tree is hard to read:
+This code plots the data as individuals and saves the file as populations. It is useful to plot as individuals to see if there are still impure data or any occurences which are different to what is expected. You can alter this in the code just above where it says 'plot(nj(aa.**ind**)...' and 'write.tree(nj(aa.D.**pop**)' change 'ind' and 'pop' accordingly.
+
+The following plot is produced for the data I am using:
 ![NJ](Figures/NJ.png)
 
-## SplitsTree
+This tree is unrooted however follows the same trends as seen earlier: LIC and MOD branch together as they are the purest lyrata, JOH (one of the new populations) branches with these two and clusters with them on the PCA meaning it must be a pure lyrata. GYE branches on its own which is the same occurence as the PCA. 
 
-upload your .tre file to the SplitsTree software which you can downlaod here: https://software-ab.cs.uni-tuebingen.de/download/splitstree6/welcome.html
+### SplitsTree
+
+Upload your .tre file to the SplitsTree software.
 
 ![SplitsTree](Figures/SplitsTree.png)
 
-## fastSTRUCTURE
-#### In a UNIX environment:
+## FastStructure
+### In a UNIX environment:
 
 Download the Cochlearia_create_structure_file.py script, make the 5kbthin_MAF2pct/ directory with the mkdir command, ensure you move the vcf file you want the script to run on into this directory. This will convert polyploids data to a format acceptable to fastSTRUCTURE.
 
@@ -630,11 +634,11 @@ paste -d '\t' pops.txt diploidized_filtered_tetraploids.3.meanQ > structure_plot
 cat structure_plot.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > structure_plot.csv
 ```
 
-#### In Structure Plot V2.0:
+### Structure Plot
 Upload your csv and select the K value you used. Plot by 'Ind Labels' which plots by population??
 
-## histograms
-#### First create a synthetic allotetraploid
+## Allele Frequency Spectrum
+### First create a synthetic allotetraploid
 We know from previous research by Yant et al. that allo**hexaploids** plot on a histogram like such:
 ![Example Allo/AutoPolyploids](Figures/auto:allo-ploids.png)
 **Autohexaploids** plot right skewed, as the most frequent allele frequency (plotted on the x-axis) are the close to 0 frequecnies as theses are the random SNPs. **Allohexaploids** plot with a central spike as ...
