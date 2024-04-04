@@ -9,7 +9,7 @@ The below code is to be ran in alternating R, python and UNIX environments
 - [Dependencies](#dependencies)
 - [Files Required](#files_required)
 - [Initial Visualisation of Data](#initial_visualisation_of_data)
-  - [Converting a VCF into a Genlight Object] (#vcf_to_genlight)
+  - [Converting a VCF into a Genlight Object](#vcf_to_genlight)
 - [Filter Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)
 - [Relatedness Calculations](#relatedness_calculations)
 - [Fast Structure](#fast_structure)
