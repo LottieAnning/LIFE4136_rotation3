@@ -3,7 +3,7 @@ This is the github page for rotation 3 of LIFE4136, exploring ploidy and purity 
 
 Arabidopsis arenosa is the sister species of Arabidopsis lyrata, both species exist in diploid and tetraploid states, Arabidopsis arenosa underwent WGD before Arabidopsis lyrata and such the hybridization of neo Arabidopsis lyrata tetraploids with Arabidopsis arenosa aided in the stabilisation of cell division. This happens because certain genes that are important for meiosis, as well as other cellular processes affected by WGD, are exchanged between different plant varieties during hybridization.
 
-The below code is to be ran in alternating R, python and UNIX environments
+The below code is to be ran in alternating R, Python and UNIX environments
 
 ## Contents
 - [Dependencies](#dependencies)
@@ -317,37 +317,54 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 <a name="filter_data_for_further_analysis_of_trends"></a>
 
-### Filter your vcf with gatk - in a UNIX environment:
+### Filter your vcf with gatk:
 
 <a name="gatk"></a>
 
-Create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```
-
-Activate your gatk environment: ```conda activate /[path_to_virtual_environment]/[virtual_environment_name]```
-
-Index your reference fasta file: ```samtools faidx [name_of_your_reference_file].fasta```
-
-Create a dictionary file from your reference fasta: ```gatk CreateSequenceDictionary -R [name_of_your_reference_file].fasta```
-
-Create a filtered .args file with the populations you wish to include (in this example I filter for only tetraploids): ```grep -o -E 'BZD-....|PEK-....|SCT-....|TEM-....|GYE-....|JOH-....|KAG-....|LIC-....|LOI-....|MAU-....|MOD-....|PIL-....|SCB-....|SWB-....|HAB-....|ROK-....|FRE-....|OCH-....|KEH-....' [name_of_your_vcf].vcf > tetraploid.args```
-
+In a UNIX command line, create a virtual environment: 
+```
+conda create --name /[path_to_virtual_environment]/[virtual_environment_name]
+```
+Activate your gatk environment: 
+```
+conda activate /[path_to_virtual_environment]/[virtual_environment_name]
+```
+Index your reference fasta file: 
+```
+samtools faidx [name_of_your_reference_file].fasta
+```
+Create a dictionary file from your reference fasta: 
+```
+gatk CreateSequenceDictionary -R [name_of_your_reference_file].fasta
+```
+Create a filtered .args file with the populations you wish to include (in this example I filter for only tetraploids): 
+```
+grep -o -E 'BZD-....|PEK-....|SCT-....|TEM-....|GYE-....|JOH-....|KAG-....|LIC-....|LOI-....|MAU-....|MOD-....|PIL-....|SCB-....|SWB-....|HAB-....|ROK-....|FRE-....|OCH-....|KEH-....' [name_of_your_vcf].vcf > tetraploid.args
+```
 Filter your vcf:
 ```
 gatk SelectVariants -R [name_of_your_reference_file].fasta -V [name_of_your_vcf].vcf -sn tetraploid.args -O tetraploid.vcf 
 ```
-Deactivate your gatk environment: ```conda deactivate```
+Deactivate your gatk environment: 
+```
+conda deactivate
+```
 
 ### If you are using a HPC download the vcf via a web browser: 
 
 <a name="hpc"></a>
 
-Create the webbrowser: ```python3 -m http.server 36895 ``` access your web address and download the file: ```http://[your_HPC_ip]:36895```
+Create the webbrowser: 
+```
+python3 -m http.server 36895
+```
+Access your web address and download the file: ```http://[your_HPC_ip]:36895```
 
-### In R, re-run the PCA:
+### Re-run the PCA:
 
 <a name="second_pca"></a>
 
-Read in the vcf: 
+In R, read in the vcf: 
 ```
 vcf <- read.vcfR("tetraploid.vcf")
 ```
