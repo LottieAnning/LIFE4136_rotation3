@@ -14,8 +14,8 @@ The below code is to be ran in alternating R, python and UNIX environments
 * [Fast Structure](#fast_structure)
 * [Allele Frequency Spectrum](#allele_frequency_spectrum)  
 
-<a name="dependencies"/>
 ## Dependencies
+<a name="dependencies"/>
 * To run *Principle Component Analysis*, *Sample Mapping*, *Nei's Distance Calculations* and *Allele Frequency Spectrum Plots* **R Studio version 4.3.3** is needed, this can be downloaded here: https://cran.r-project.org/mirrors.html, simply navigate to your country and select the package compatible for your machine. Secondary to this, the following R packages need to be installed for the code to run:
   * **adegenet** version 2.1.10 or higher, simply install by typing: ```install.pacakges(adegenet)``` into the R command line
   * **adegraphics** version 1.0.21 or higher, simply install by typing: ```install.pacakges(adegraphics)``` into the R command line
@@ -36,9 +36,8 @@ The below code is to be ran in alternating R, python and UNIX environments
 * To plot the *Neighbour Joining (NJ) Trees* **Splits tree of version 6.2.2-beta** is required which can be downloaded at:	https://github.com/husonlab/splitstree6
 * **structure plot?**
 
-<a name="files_required"/>
 ## Files Required
-
+<a name="files_required"/>
 * **vcf** with all your samples
 * reference **fasta file** to which your reads were aligned to
 
