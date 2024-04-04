@@ -9,11 +9,25 @@ The below code is to be ran in alternating R, python and UNIX environments
 - [Dependencies](#dependencies)
 - [Files Required](#files_required)
 - [Initial Visualisation of Data](#initial_visualisation_of_data)
-  - [Converting a VCF into a Genlight Object](#vcf_to_genlight)
-- [Filter Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)
+  - [Converting a VCF into a genlight object](#vcf_to_genlight)
+  - [Sense checking data](#sense_check)
+  - [Running an initial PCA](#initial_pca)
+- [Filtering Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)
+  - [Filtering with GATK](#gatk)
+  - [Downloading files from a HPC](#hpc)
+  - [Re-running the PCA](#second_pca)
+  - [Testing geographical influence](#map)
+  - [Filtering with GATK](#gatk)
+  - [Running a PCA on individuals in a population](#third_pca)
+  - [Further filtering with GATK](#gatk)
 - [Relatedness Calculations](#relatedness_calculations)
+  - [Nei's distances](#nei)
+  - [SplitsTree](#splitstree)
 - [Fast Structure](#fast_structure)
-- [Allele Frequency Spectrum](#allele_frequency_spectrum)  
+  - [Structure plotting](#structure_plot)
+- [Allele Frequency Spectrum](#allele_frequency_spectrum)
+  - [Creating an example allotetraploid](#allotetraploid)
+  - [Creating allele frequency histograms](#histogram)
 
 ## Dependencies
 
@@ -135,6 +149,9 @@ locNames(aa.genlight) <- paste(vcf@fix[,1],vcf@fix[,2],sep="_")
 pop(aa.genlight)<-substr(indNames(aa.genlight),1,3) 
 ```
 ### Check your data - this section is optional
+
+<a name="sense_check"></a>
+
 ```
 aa.genlight
 ```
@@ -147,6 +164,9 @@ If you want to see the populations and number of them, run: ```unique(pop(aa.gen
 If you want to see the variety of ploidy in sample, run: ```unique(ploidy(aa.genlight))```
 
 ### Run an initial PCA:
+
+<a name="initial_pca"></a>
+
 This will allow for the discovery of potential trends in your data and allow for preliminary visualisation.
 
 Define the PCA function:
@@ -296,7 +316,7 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 ## Filter Data for Further Analysis of Trends
 
-<a name="filter_data_for_further_analysis_of_trends"/>
+<a name="filter_data_for_further_analysis_of_trends"></a>
 
 ### Filter your vcf with gatk - in a UNIX environment:
 
@@ -556,7 +576,7 @@ It is known that PC1 splits inidividuals closest to arenosa (left), hybrids (cen
 
 ## Relatedness Calculations
 
-<a name="relatedness_calculations"/>
+<a name="relatedness_calculations"></a>
 
 ### Calculate Nei's distances
 Create a matrix of pairwise distances for **individuals**:
@@ -598,7 +618,7 @@ Upload your .tre file to the SplitsTree software.
 
 ## FastStructure
 
-<a name="fast_structure"/>
+<a name="fast_structure"></a>
 
 ### In a UNIX environment:
 
@@ -655,7 +675,7 @@ Upload your csv and select the K value you used. Plot by 'Ind Labels' which plot
 
 ## Allele Frequency Spectrum
 
-<a name="allele_frequency_spectrum"/>
+<a name="allele_frequency_spectrum"></a>
 
 ### First create a synthetic allotetraploid
 We know from previous research by Yant et al. that allo**hexaploids** plot on a histogram like such:
