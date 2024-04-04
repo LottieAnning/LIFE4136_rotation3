@@ -6,13 +6,13 @@ Arabidopsis arenosa is the sister species of Arabidopsis lyrata, both species ex
 The below code is to be ran in alternating R, python and UNIX environments
 
 ## Contents
-* [Dependencies](#dependencies)
-* [Files Required](#files_required)
-* [Initial Visualisation of Data](#initial_visualisation_of_data)
-* [Filter Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)
-* [Relatedness Calculations](#relatedness_calculations)
-* [Fast Structure](#fast_structure)
-* [Allele Frequency Spectrum](#allele_frequency_spectrum)  
+- [Dependencies](#dependencies)
+- [Files Required](#files_required)
+- [Initial Visualisation of Data](#initial_visualisation_of_data)
+- [Filter Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)
+- [Relatedness Calculations](#relatedness_calculations)
+- [Fast Structure](#fast_structure)
+- [Allele Frequency Spectrum](#allele_frequency_spectrum)  
 
 ## Dependencies
 <a name="dependencies"/>
