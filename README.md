@@ -8,7 +8,6 @@ The below code is to be ran in alternating R, python and UNIX environments
 ## Contents
 [Dependencies](#dependencies) 
 [Files Required](#files_required)
-- [Loading packages in R] (#loading_packages_in_r)
 [Initial Visualisation of Data](#initial_visualisation_of_data)  
 [Filter Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)  
 [Relatedness Calculations](#relatedness_calculations)  
