@@ -39,11 +39,16 @@ The below code is to be ran in alternating R, python and UNIX environments
 * **structure plot?**
 
 ## Files Required
+
 <a name="files_required"/>
+
 * **vcf** with all your samples
 * reference **fasta file** to which your reads were aligned to
 
 ## Initial Visualisation of Data
+
+<a name="initial_visualisation_of_data"/>
+
 ### Loading packages in R:
 ```
 library(vcfR)
@@ -287,6 +292,8 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 ## Filter Data for Further Analysis of Trends
 
+<a name="filter_data_for_further_analysis_of_trends"/>
+
 ### Filter your vcf with gatk - in a UNIX environment:
 
 Create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```
@@ -328,7 +335,7 @@ s.class(pca.2$scores, pop(aa.genlight), xax=1, yax=2, col=transp(col,.6), ellips
 
 Again PC1 seperates pure lyrata (left) from hybrids (centre) and populations closer to arenosa (right) and PC2 is potentially seperating populations via geography.
 
-#### To test if PC2 is seperating populations you can use the leaflet() package:
+### To test if PC2 is seperating populations you can use the leaflet() package:
 ```
 mymap <- leaflet() %>%
   setView(lng = 15.2551, lat = 50, zoom = 5) %>%
@@ -545,6 +552,8 @@ It is known that PC1 splits inidividuals closest to arenosa (left), hybrids (cen
 
 ## Relatedness Calculations
 
+<a name="relatedness_calculations"/>
+
 ### Calculate Nei's distances
 Create a matrix of pairwise distances for **individuals**:
 ```
@@ -584,6 +593,9 @@ Upload your .tre file to the SplitsTree software.
 ![SplitsTree](Figures/SplitsTree.png)
 
 ## FastStructure
+
+<a name="fast_structure"/>
+
 ### In a UNIX environment:
 
 Download the Cochlearia_create_structure_file.py script, make the 5kbthin_MAF2pct/ directory with the mkdir command, ensure you move the vcf file you want the script to run on into this directory. This will convert polyploids data to a format acceptable to fastSTRUCTURE.
@@ -638,6 +650,9 @@ cat structure_plot.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > structure_plot.cs
 Upload your csv and select the K value you used. Plot by 'Ind Labels' which plots by population??
 
 ## Allele Frequency Spectrum
+
+<a name="allele_frequency_spectrum"/>
+
 ### First create a synthetic allotetraploid
 We know from previous research by Yant et al. that allo**hexaploids** plot on a histogram like such:
 ![Example Allo/AutoPolyploids](Figures/auto:allo-ploids.png)
