@@ -17,9 +17,8 @@ The below code is to be ran in alternating R, python and UNIX environments
   - [Downloading files from a HPC](#hpc)
   - [Re-running the PCA](#second_pca)
   - [Testing geographical influence](#map)
-  - [Filtering with GATK](#gatk)
   - [Running a PCA on individuals in a population](#third_pca)
-  - [Further filtering with GATK](#gatk)
+  - [Further filtering with GATK](#further_gatk)
 - [Relatedness Calculations](#relatedness_calculations)
   - [Nei's distances](#nei)
   - [SplitsTree](#splitstree)
@@ -84,7 +83,7 @@ Read in vcf:
 ```
 vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
-### Convert vcf into a genlight object:
+### Convert your vcf into a genlight object:
 
 <a name="vcf_to_genlight"></a>
 
@@ -320,6 +319,8 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 ### Filter your vcf with gatk - in a UNIX environment:
 
+<a name="gatk"></a>
+
 Create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```
 
 Activate your gatk environment: ```conda activate /[path_to_virtual_environment]/[virtual_environment_name]```
@@ -337,9 +338,15 @@ gatk SelectVariants -R [name_of_your_reference_file].fasta -V [name_of_your_vcf]
 Deactivate your gatk environment: ```conda deactivate```
 
 ### If you are using a HPC download the vcf via a web browser: 
+
+<a name="hpc"></a>
+
 Create the webbrowser: ```python3 -m http.server 36895 ``` access your web address and download the file: ```http://[your_HPC_ip]:36895```
 
-### In R:
+### In R, re-run the PCA:
+
+<a name="second_pca"></a>
+
 Read in the vcf: 
 ```
 vcf <- read.vcfR("tetraploid.vcf")
@@ -359,7 +366,10 @@ s.class(pca.2$scores, pop(aa.genlight), xax=1, yax=2, col=transp(col,.6), ellips
 
 Again PC1 seperates pure lyrata (left) from hybrids (centre) and populations closer to arenosa (right) and PC2 is potentially seperating populations via geography.
 
-### To test if PC2 is seperating populations you can use the leaflet() package:
+### To test if PC2 is seperating populations via geographical location you can use the leaflet() package:
+
+<a name="map"></a>
+
 ```
 mymap <- leaflet() %>%
   setView(lng = 15.2551, lat = 50, zoom = 5) %>%
@@ -391,6 +401,9 @@ mymap
 I have annotated the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK. GYE is further South from the sample cluster, however, it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
 
 ### For further analysis you can plot the PCA by individuals:
+
+<a name="third_pca"></a>
+
 ```
 df <- extract.gt(vcf)
 df[df == "0|0"] <- 0
@@ -473,6 +486,9 @@ ggplot(pcs, aes(PC1, PC2, color=as.factor(ploidy))) +
 ![Individuals PCA](Figures/individuals_pca.png)
 
 ### Filter out impure individuals
+
+<a name="further_gatk"></a>
+
 From observation alone it is clear to see that some individuals are plotting incorrectly. Individuals such as KAG.03tl plot close to the arenosa end of the scale which is incorrect as we know its pure lyrata. The below figure shows the other tainted individuals:
 
 ![Annotated Individuals PCA](Figures/annotated_individuals_pca.png)
@@ -579,6 +595,9 @@ It is known that PC1 splits inidividuals closest to arenosa (left), hybrids (cen
 <a name="relatedness_calculations"></a>
 
 ### Calculate Nei's distances
+
+<a name="nei"></a>
+
 Create a matrix of pairwise distances for **individuals**:
 ```
 aa.D.ind <- stamppNeisD(aa.genlight, pop = FALSE)
@@ -611,6 +630,8 @@ The following plot is produced for the data I am using:
 This tree is unrooted however follows the same trends as seen earlier: LIC and MOD branch together as they are the purest lyrata, JOH (one of the new populations) branches with these two and clusters with them on the PCA meaning it must be a pure lyrata. GYE branches on its own which is the same occurence as the PCA. 
 
 ### SplitsTree
+
+<a name="splitstree"></a>
 
 Upload your .tre file to the SplitsTree software.
 
@@ -671,6 +692,9 @@ cat structure_plot.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > structure_plot.cs
 ```
 
 ### Structure Plot
+
+<a name="structure_plot"></a>
+
 Upload your csv and select the K value you used. Plot by 'Ind Labels' which plots by population??
 
 ## Allele Frequency Spectrum
@@ -678,6 +702,9 @@ Upload your csv and select the K value you used. Plot by 'Ind Labels' which plot
 <a name="allele_frequency_spectrum"></a>
 
 ### First create a synthetic allotetraploid
+
+<a name="allotetraploid"></a>
+
 We know from previous research by Yant et al. that allo**hexaploids** plot on a histogram like such:
 ![Example Allo/AutoPolyploids](Figures/auto:allo-ploids.png)
 **Autohexaploids** plot right skewed, as the most frequent allele frequency (plotted on the x-axis) are the close to 0 frequecnies as theses are the random SNPs. **Allohexaploids** plot with a central spike as ...
@@ -714,11 +741,9 @@ ggplot(data = filtered_df, aes(Mean_AF)) +
 ```
 ![Synthetic Plots](Figures/synthetic.png)
 
+### Creating allele frequency histograms
 
-
-
-
-
+<a name="histogram"></a>
 
 #### In R - create a pops.txt file:
 ```
