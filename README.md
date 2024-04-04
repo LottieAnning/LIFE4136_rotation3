@@ -9,6 +9,7 @@ The below code is to be ran in alternating R, python and UNIX environments
 - [Dependencies](#dependencies)
 - [Files Required](#files_required)
 - [Initial Visualisation of Data](#initial_visualisation_of_data)
+  - [Converting a VCF into a Genlight Object] (#vcf_to_genlight)
 - [Filter Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)
 - [Relatedness Calculations](#relatedness_calculations)
 - [Fast Structure](#fast_structure)
@@ -49,7 +50,7 @@ The below code is to be ran in alternating R, python and UNIX environments
 
 <a name="initial_visualisation_of_data"/>
 
-### Loading packages in R:
+Load packages in R:
 ```
 library(vcfR)
 library(adegenet)
@@ -61,15 +62,18 @@ library(ggrepel)
 library(StAMPP)
 library(leaflet)
 ```
-### Set working directory:
+Set working directory:
 ```
 setwd("[path_to_working_directory]")
 ```
-### Read in vcf:
+Read in vcf:
 ```
 vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
-### Convert vcf into a genlight object
+### Convert vcf into a genlight object:
+
+<a name="vcf_to_genlight"/>
+
 First create the function:
 ```
 vcfR2genlight.tetra <- function (x, n.cores = 1) 
