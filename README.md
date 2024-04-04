@@ -41,14 +41,14 @@ The below code is to be ran in alternating R, python and UNIX environments
 
 ## Files Required
 
-<a name="files_required"/>
+<a name="files_required"></a>
 
 * **vcf** with all your samples
 * reference **fasta file** to which your reads were aligned to
 
 ## Initial Visualisation of Data
 
-<a name="initial_visualisation_of_data"/>
+<a name="initial_visualisation_of_data"></a>
 
 Load packages in R:
 ```
@@ -72,7 +72,7 @@ vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
 ### Convert vcf into a genlight object:
 
-<a name="vcf_to_genlight"/>
+<a name="vcf_to_genlight"></a>
 
 First create the function:
 ```
