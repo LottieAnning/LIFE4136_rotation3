@@ -1,7 +1,7 @@
 # LIFE4136 Rotation 3
 This is the github page for rotation 3 of LIFE4136, exploring ploidy and purity patterns in European Arabidopsis lyrata. Further to the work completed by Marburger et al., in 2019 (paper accessed here: https://www.nature.com/articles/s41467-019-13159-5) the contents of this repository specifically investigate trends which highlight if a sample population is an allopolyploid or autopolyploid. This research is to support the further investigation currently being completed by their team in whether alloploidy (attained via interspecific hybridisation) aids in stabilising meiosis and other processes that are disturbed during whole genome duplication (WGD). 
 
-Arabidopsis arenosa is the sister species of Arabidopsis lyrata, both species exist in diploid and tetraploid states, Arabidopsis arenosa underwent WGD before Arabidopsis lyrata and such the hybridization of neo Arabidopsis lyrata tetraploids with Arabidopsis arenosa aided in the stabilisation of cell division. This happens because certain genes that are important for meiosis, as well as other cellular processes affected by WGD, are exchanged between different plant varieties during hybridization.
+Arabidopsis arenosa is the sister species of Arabidopsis lyrata. Both species exist in diploid and tetraploid states, Arabidopsis arenosa underwent WGD before Arabidopsis lyrata and such the hybridization of Arabidopsis lyrata tetraploids with Arabidopsis arenosa aided in the stabilisation of cell division. This happens because certain genes that are important for meiosis, as well as other cellular processes affected by WGD, are exchanged between different plant varieties during hybridization.
 
 The below code is to be ran in alternating R, Python and UNIX environments
 
@@ -46,7 +46,7 @@ The below code is to be ran in alternating R, Python and UNIX environments
   * .
 * To run the *Cochlearia_create_structure_file.py* script for *fastStructure* and *downloading files from a High Power Computer (HPC)* **Python version 3.8.12** is required along with:
   * .
-* To run *gatk* **version 4.2.2.0** is required which can be downloaded here: https://github.com/broadinstitute/gatk/releases, however a HPC with an existing version is recommended as this is a large pacakge. Other dependencies are:
+* To run *gatk* **version 4.2.2.0** is required, first create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```, then download the package: https://github.com/broadinstitute/gatk/releases, however a HPC with an existing version is recommended as this is a large package. Other dependencies are:
   * **Conda version 23.11.0**
   * **SAMtools version 1.19.2** which can be downloaded here: https://www.htslib.org/download/
 * To plot the *Neighbour Joining (NJ) Trees* **Splits tree of version 6.2.2-beta** is required which can be downloaded at:	https://github.com/husonlab/splitstree6
@@ -56,8 +56,8 @@ The below code is to be ran in alternating R, Python and UNIX environments
 
 <a name="files_required"></a>
 
-* **vcf** with all your samples
-* reference **fasta file** to which your reads were aligned to
+* A **vcf** with all your samples
+* A reference **fasta file** to which your reads were aligned to
 
 ## Initial Visualisation of Data
 
@@ -136,18 +136,18 @@ vcfR2genlight.tetra <- function (x, n.cores = 1)
   return(x)
 }
 ```
-Run the conversion:
+Then run the conversion:
 ```
 aa.genlight <- vcfR2genlight.tetra(vcf)
 ```
-Warnings may occur after this line, you can use the **warnings()** function to view the specifics, in my initial run 31 warnings occured all of which returned: 'In initialize(value, ...) : NAs introduced by coercion' meaning there was missing data in the vcf so NA values are introduced. You can inspect your VCF file to identify any missing or unexpected data that might be causing the issue, however at this stage the code can handle missing values and visualisation will still show trends.
+Warnings may occur after this line, you can use the **warnings()** function to view the specifics. In my initial run, 31 warnings occured all of which returned: 'In initialize(value, ...) : NAs introduced by coercion' meaning there was missing data in the vcf so NA values are introduced. You can inspect your VCF file to identify any missing or unexpected data that might be causing the issue, however at this stage the code can handle missing values and visualisation will still show trends.
 
 Create individual id's and population names:
 ```
 locNames(aa.genlight) <- paste(vcf@fix[,1],vcf@fix[,2],sep="_")
 pop(aa.genlight)<-substr(indNames(aa.genlight),1,3) 
 ```
-### Check your data - this section is optional
+### Check your data - this section is optional:
 
 <a name="sense_check"></a>
 
@@ -297,7 +297,7 @@ This is what my first PCA looked like:
 
 ![First PCA](Figures/first_pca.png)
 
-For reference, this figure from the Marburger paper *(linked at the top of the page)* shows some information on ploidy and purity of the data I am looking at (not all populations are included in this paper):
+For reference, this figure from the Marburger paper, *linked at the top of the page,* shows some information on ploidy and purity of the new data (not all populations are included in this plot and SWA and HAL are SWB and HAB in the new data respectively):
 
 ![Marburger Plot](Figures/marburger_plot.png)
 
@@ -321,11 +321,7 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 <a name="gatk"></a>
 
-In a UNIX command line, create a virtual environment: 
-```
-conda create --name /[path_to_virtual_environment]/[virtual_environment_name]
-```
-Activate your gatk environment: 
+In a UNIX command line, activate your gatk environment: 
 ```
 conda activate /[path_to_virtual_environment]/[virtual_environment_name]
 ```
@@ -337,7 +333,7 @@ Create a dictionary file from your reference fasta:
 ```
 gatk CreateSequenceDictionary -R [name_of_your_reference_file].fasta
 ```
-Create a filtered .args file with the populations you wish to include (in this example I filter for only tetraploids): 
+Create a filtered .args file with the populations you wish to include (in this example I filter for only tetraploids, the structure of the code is 'BZD-....' for example because the sample id's in the data are in the format: 'BZD-01tl' where 'BZD' is the population name and the following characters are the individual id): 
 ```
 grep -o -E 'BZD-....|PEK-....|SCT-....|TEM-....|GYE-....|JOH-....|KAG-....|LIC-....|LOI-....|MAU-....|MOD-....|PIL-....|SCB-....|SWB-....|HAB-....|ROK-....|FRE-....|OCH-....|KEH-....' [name_of_your_vcf].vcf > tetraploid.args
 ```
@@ -414,8 +410,10 @@ mymap <- mymap %>% addMarkers(lng = 15.542146, lat = 47.816197, popup = "KEH")
 
 mymap
 ```
+Add in the latitude and longitude coordinates for your sample populations and their names.
+
 ![Annotated Map](Figures/annotated_map.png)
-I have annotated the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK. GYE is further South from the sample cluster, however, it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
+I have annotated the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK so this supports the hypothesis that PC2 seperates the populations by geography. However, GYE is further South from the sample cluster, but it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
 
 ### For further analysis you can plot the PCA by individuals:
 
@@ -445,22 +443,22 @@ df[df == "0/1/1/1/1/1"] <- 5
 df[df == "1/1/1/1/1/1"] <- 6
 df <- data.frame(apply(df,2,function(x)as.numeric(as.character(x))))
 ```
-Remove samples with > 50% missing data
+Remove samples with > 50% missing data:
 ```
 mis <- apply(df,2,function(x)sum(is.na(x))/length(x))
 df <- df[,mis <= 0.5]
 ```
-Calculate allele frequencies
+Calculate allele frequencies:
 ```
 ploidy <- apply(df,2,max,na.rm=T)
 p <- apply(df,1,function(x)sum(x,na.rm=T)/sum(ploidy[!is.na(x)]))
 ```
-Removing individuals can change allele frequencies, so we make sure that maf >= 0.05
+Removing individuals can change allele frequencies, so we make sure that maf >= 0.05:
 ```
 df <- df[p >= 0.05 & p <= 0.95,]
 p <- p[p >= 0.05 & p <= 0.95]
 ```
-Estimate a covariance matrix
+Estimate a covariance matrix:
 ```
 n <- ncol(df)
 cov <- matrix(nrow=n,ncol=n)
@@ -472,7 +470,7 @@ for(i in 1:n){
   }	
 }
 ```
-Do PCA on the matrix
+Do a PCA on the matrix:
 ```
 pc <- prcomp(cov,scale=T)
 xlab <- paste0("PC1 (",round(summary(pc)$importance[2]*100),"%)")
@@ -506,12 +504,11 @@ ggplot(pcs, aes(PC1, PC2, color=as.factor(ploidy))) +
 
 <a name="further_gatk"></a>
 
-From observation alone it is clear to see that some individuals are plotting incorrectly. Individuals such as KAG.03tl plot close to the arenosa end of the scale which is incorrect as we know its pure lyrata. The below figure shows the other tainted individuals:
+From observation alone it is clear to see that some individuals are plotting incorrectly. Individuals such as KAG.03tl plot close to the arenosa end of the scale (left) which is incorrect as we know from Marburger et al., it's pure lyrata. Impurity can occur due to many reasons, including: incorrect labelling of samples, sample mix ups in the lab, contamination etc. The below figure shows the other impure individuals, highlighted in yellow:
 
 ![Annotated Individuals PCA](Figures/annotated_individuals_pca.png)
 
 Returning to gatk, filter out the impure individuals:
-# why impure!
 ```
 grep -o -E 'BZD-....|PEK-....|SCT-....|TEM-....|GYE-....|JOH-....|KAG-(01|02|04|05|06|07|08)..|LIC-....|LOI-....|MAU-....|MOD-....|PIL-....|SCB-....|SWB-....|HAB-....|ROK-....|FRE-(01|02|03|04|05|07)tl|OCH-(01|02|03|04|06|07|08)tl|KEH-(01|02|03|04|05)tl' Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf > filtered_tetraploid.args
 ```
@@ -519,7 +516,7 @@ Filter the vcf:
 ```
 gatk SelectVariants -R [name_of_your_reference_file].fasta -V [name_of_your_vcf].vcf -sn filtered_tetraploid.args -O filtered_tetraploid.vcf 
 ```
-Download and read the vcf into local pc:
+Download the vcf and then read it into your local pc in R:
 ```
 vcf <- read.vcfR("filtered_tetraploids.vcf")
 ```
@@ -548,22 +545,22 @@ df[df == "0/1/1/1/1/1"] <- 5
 df[df == "1/1/1/1/1/1"] <- 6
 df <- data.frame(apply(df,2,function(x)as.numeric(as.character(x))))
 ```
-Remove samples with > 50% missing data
+Remove samples with > 50% missing data:
 ```
 mis <- apply(df,2,function(x)sum(is.na(x))/length(x))
 df <- df[,mis <= 0.5]
 ```
-Calculate allele frequencies
+Calculate allele frequencies:
 ```
 ploidy <- apply(df,2,max,na.rm=T)
 p <- apply(df,1,function(x)sum(x,na.rm=T)/sum(ploidy[!is.na(x)]))
 ```
-Removing individuals can change allele frequencies, so we make sure that maf >= 0.05
+Removing individuals can change allele frequencies, so we make sure that maf >= 0.05:
 ```
 df <- df[p >= 0.05 & p <= 0.95,]
 p <- p[p >= 0.05 & p <= 0.95]
 ```
-Estimate a covariance matrix
+Estimate a covariance matrix:
 ```
 n <- ncol(df)
 cov <- matrix(nrow=n,ncol=n)
@@ -575,7 +572,7 @@ for(i in 1:n){
   }	
 }
 ```
-Do PCA on the matrix
+Do PCA on the matrix:
 ```
 pc <- prcomp(cov,scale=T)
 xlab <- paste0("PC1 (",round(summary(pc)$importance[2]*100),"%)")
@@ -605,7 +602,7 @@ ggplot(pcs, aes(PC1, PC2, color=as.factor(ploidy))) +
 ```
 ![Filtered PCA](Figures/filtered_pca.png)
 
-It is known that PC1 splits inidividuals closest to arenosa (left), hybrids (central) and pure lyrata (right), however it is slightly unclear what PC2 annotates. For example, why does BZD cluster on its own?
+It is obvious by now that PC1 splits individuals closest to arenosa (left), hybrids (central) and pure lyrata (right), however it is slightly unclear what PC2 annotates. For example, why does BZD cluster on its own? Investigating relatedness may clear this up.
 
 ## Relatedness Calculations
 
@@ -623,7 +620,7 @@ Create a matrix of pairwise distances for **populations**:
 ```
 aa.D.pop <- stamppNeisD(aa.genlight, pop = TRUE)
 ```
-Create the dist objects:
+Create the distance objects:
 ```
 colnames(aa.D.ind) <- rownames(aa.D.ind)
 aa.D.ind.dist <-as.dist(aa.D.ind, diag=T)
@@ -639,12 +636,12 @@ plot(nj(aa.D.ind), typ="unrooted", cex=0.7)
 title(expression("Neighbour-joining tree of distance-based analysis of "*italic(Arabidposis)*" "))
 write.tree(nj(aa.D.pop),file="NJ.distance_tree_outgroups.tre")
 ```
-This code plots the data as individuals and saves the file as populations. It is useful to plot as individuals to see if there are still impure data or any occurences which are different to what is expected. You can alter this in the code just above where it says 'plot(nj(aa.**ind**)...' and 'write.tree(nj(aa.D.**pop**)' change 'ind' and 'pop' accordingly.
+This code plots the data as individuals and saves a .tre file in their populations for plotting in SplitsTree later. You can alter this in the code just above where it says 'plot(nj(aa.**ind**)...' and 'write.tree(nj(aa.D.**pop**)' change 'ind' and 'pop' accordingly. It is useful to plot as individuals to see if there are still impure data or any occurences which are different to what is expected.
 
 The following plot is produced for the data I am using:
 ![NJ](Figures/NJ.png)
 
-This tree is unrooted however follows the same trends as seen earlier: LIC and MOD branch together as they are the purest lyrata, JOH (one of the new populations) branches with these two and clusters with them on the PCA meaning it must be a pure lyrata. GYE branches on its own which is the same occurence as the PCA. 
+This tree is unrooted and follows the same trends as seen earlier: LIC and MOD branch together as they are the purest lyrata, JOH (one of the new populations) branches with these two and clusters with them on the PCA meaning it must be a pure lyrata. GYE branches on its own which is the same occurence as the PCA. 
 
 ### SplitsTree
 
