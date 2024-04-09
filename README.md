@@ -655,8 +655,21 @@ Upload your .tre file to the SplitsTree software.
 
 <a name="fast_structure"></a>
 
+#### In R - create a file containing individual ids and population names:
+```
+individual_names <- indNames(aa.genlight)
+populations <- as.character(pop(aa.genlight))
+data <- data.frame(individual_names, populations)
+write.table(data, "populations.txt", sep = "\t", row.names = FALSE, col.names = FALSE)
+```
+This will create a tab deliminated file with the individual name and their population
+
 ### In a UNIX environment:
 
+First remove all the quotation marks from the populations file you just created:
+```
+sed 's/"//g' populations.txt > pops.txt
+```
 Download the Cochlearia_create_structure_file.py script, make the 5kbthin_MAF2pct/ directory with the mkdir command, ensure you move the vcf file you want the script to run on into this directory. This will convert polyploids data to a format acceptable to fastSTRUCTURE.
 
 Now run:
@@ -715,17 +728,19 @@ Upload your csv and select the K value you used. Plot by 'Ind Labels' which plot
 
 <a name="allele_frequency_spectrum"></a>
 
-### First create a synthetic allotetraploid
+Another way of investigating whether a population is **allo-** or **auto-** polyploid is by creating Allele Frequency Spectrums (AFS). Most commonly this is represented on a histogram. The output visualises the genetic variation within a population by describing the distribution of allele frequencies.
+
+We know from previous research by Yant et al. that allo- and auto- **hexaploids** plot on a histogram like such:
+![Example Allo/AutoPolyploids](Figures/auto:allo-ploids.png)
+The **autohexaploids** plot with an exponential distribution which is right skewed, this is because the least frequent allele frequencies are the rarely occuring single nucleotide polymorphisms (SNPs). There are many different SNPs which occur close to a frequency of zero, causing this high left peak. **Allohexaploids** plot with a left, central and right peak. Again the data contains a high count of in-frequent SNPs which form the left peak. The central peak represents the alleles which occcur at virtually half frequency becuase on average hybrids contain 50/50 alleles from the two populations that merged and thus the frequently occuring alleles in one population are only half in the new population. And the right sided peak is formed from alleles which are conserved over both populations.
+
+Autopolyploids always follow this exponential distribution, where the increase in sets of chromosomes only broadens the allele frequency distribtution. However, it is uncertain how a allo**tetraploid** would plot as the above histogram plots **hexaploid** data. To avoid potential overlooking of data and to draw reasonable comparisons, it is best to create an example allotetraploid to compare the sample data with.
+
+### Creating an example allotetraploid:
 
 <a name="allotetraploid"></a>
 
-We know from previous research by Yant et al. that allo**hexaploids** plot on a histogram like such:
-![Example Allo/AutoPolyploids](Figures/auto:allo-ploids.png)
-**Autohexaploids** plot right skewed, as the most frequent allele frequency (plotted on the x-axis) are the close to 0 frequecnies as theses are the random SNPs. **Allohexaploids** plot with a central spike as ...
-
-However these are hexaploids and the sames we are looking at are tetraploids. To avoid potential overlooking of data, it is best to create a synthetic allotetraploid to compare the sample data with.
-
-Using the files 'arenosa_632.txt' and 'lyrata_272_with_some_hybrids.txt' which contain mostly tetraploid data of arenosa and lyrata samples:
+Download the files 'arenosa_632.txt' and 'lyrata_272_with_some_hybrids.txt' to the working directory you set earlier. These files contain mostly tetraploid data of arenosa and lyrata samples which we can merge to create an allotetraploid. If you are using different populations locate files which contain atleast allele frequencies at specific positions on chromosomes.
 
 Read the data in:
 ```
@@ -744,7 +759,14 @@ Create a new data frame with 'POS' and 'Mean_AF':
 ```
 new_df <- merged_df[, c("POS", "Mean_AF")]
 ```
-After plotting, the uncommon SNPs mask potential trends in the data, so filter by mean allele frequency greater than 0.1:
+This new data frame has the mean allele frequencies at the same sites for lyrata and arenosa.
+
+Plot:
+```
+ggplot(data = new_df, aes(Mean_AF)) +
+  geom_histogram(color='black',fill='white', bins = 100)
+```
+This plot is shown below as 'Un-Filtered' because we had to filter the data as the uncommon SNPs conceal potential trends in the data (you can see a slight peak in the middle however its masked because theres such a high count of in-frequent alleles), so filter the mean allele frequency to be greater than 0.1:
 ```
 filtered_df <- new_df[new_df$Mean_AF > 0.1, ]
 ```
@@ -755,33 +777,30 @@ ggplot(data = filtered_df, aes(Mean_AF)) +
 ```
 ![Synthetic Plots](Figures/synthetic.png)
 
+From the filtered plot it is clear to see there is still a central peak in allotetraploids it it just less defined than the allohexaploid plot (note this may be becuase of different sample or bin sizing). Now lets compare our data to this allotetraploid.
+
 ### Creating allele frequency histograms
 
 <a name="histogram"></a>
 
-#### In R - create a pops.txt file:
-```
-individual_names <- indNames(aa.genlight)
-populations <- as.character(pop(aa.genlight))
-data <- data.frame(individual_names, populations)
-write.table(data, "pops.txt", sep = "\t", row.names = FALSE, col.names = FALSE)
-```
-This will create a tab deliminated file with the individual name and their population
+Firstly, in a Unix environment:
+This requires the 'pops.txt' file created earlier for fastStructure and the poly_freq.c script. 
 
-#### In a Unix environment:
+Compile the scipt into an executable environment called poly_freq:
 ```
-sed 's/"//g' pops.txt > output.txt   #removes all the ""
 gcc poly_freq.c -o poly_freq -lm
+```
+Execute the script:
+```
  ./poly_freq -vcf [title_of_your_vcf].vcf -pops pops.txt > info.tsv
 ```
 This will create a file with population-specific allele frequencies
-n.b. poly_freq.c script is required here (the script contains set up information)
 
-#### Read in the tsv. in R you should have piped the output from poly freq to a 'file.tsv' 
+Now read the tsv file into R:
 ```
-df <- read.table(file ='info.tsv' ,header = TRUE,sep = '\t')
+df <- read.table(file ='info.tsv', header = TRUE, sep = '\t')
 ```
-#### Store allele frequencies of the population you want to plot in a variable
+Store allele frequencies of the population you want to plot in a variable
 ```
 allele_frequencies <- df$BZD
 ```
