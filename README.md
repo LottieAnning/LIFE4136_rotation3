@@ -647,9 +647,11 @@ This tree is unrooted and follows the same trends as seen with the PCA and purit
 
 <a name="splitstree"></a>
 
-After downloading SplitsTree (instructions at the top of the page) ipload your .tre file to the SplitsTree software by navigating to [File] then [open]. Once loaded select *[Tree]* then [NJ] to view your tree as a midpoint rooted neighbour joined tree.
+After downloading SplitsTree (instructions at the top of the page) ipload your .tre file to the SplitsTree software by navigating to [File] then [Open]. Once loaded select [Tree] then [NJ] to view your tree as a midpoint rooted neighbour joined tree. The output should look as follows:
 
 ![SplitsTree](Figures/SplitsTree.png)
+
+Interestingly, SWB and MAU are outgrouped. From the Marburger et al., purity plot these individuals were annotated as approximate pure lyrata. These two populations likely diverged first after undergoing WGD. Interestingly the population closest to arenosa (KEH) is nested amongst the lineage, this supports the theory that these lyrata tetraploids hybridised post WGD. The distance from KEH from its shared common ancester with OCH is extensive, meaning the hybridisation and aquisition of arenosa 
 
 ## FastStructure
 
