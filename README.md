@@ -1,7 +1,7 @@
 # LIFE4136 Rotation 3
-This is the github page for rotation 3 of LIFE4136, exploring ploidy and purity patterns in European Arabidopsis lyrata. Further to the work completed by Marburger et al., in 2019 (paper accessed here: https://www.nature.com/articles/s41467-019-13159-5) the contents of this repository specifically investigate trends which highlight if a sample population is an allopolyploid or autopolyploid. This research is to support the further investigation currently being completed by their team in whether alloploidy (attained via interspecific hybridisation) aids in stabilising meiosis and other processes that are disturbed during whole genome duplication (WGD). 
+This is the github page for rotation 3 of LIFE4136, exploring the novel process of hybridisation post whole genome duplication (WGD). Further to the work completed by Marburger et al., in 2019 (paper accessed here: https://www.nature.com/articles/s41467-019-13159-5) the contents of this repository investigate trends which highlight to what extent a sample population is an allopolyploid or autopolyploid. This research is to support the further investigation currently being completed by their team as to how and why allopolyploidy (attained via interspecific hybridisation) is occuring post WGD. Other literature points to hybridisation occuring prior WGD not post - such is the nature of the sample populations in this research.
 
-Arabidopsis arenosa is the sister species of Arabidopsis lyrata. Both species exist in diploid and tetraploid states, Arabidopsis arenosa underwent WGD before Arabidopsis lyrata and such the hybridization of Arabidopsis lyrata tetraploids with Arabidopsis arenosa aided in the stabilisation of cell division. This happens because certain genes that are important for meiosis, as well as other cellular processes affected by WGD, are exchanged between different plant varieties during hybridization.
+Arabidopsis arenosa is the sister species of Arabidopsis lyrata. Both species exist in diploid and tetraploid states, Arabidopsis arenosa underwent WGD before Arabidopsis lyrata. The hybridization of Arabidopsis lyrata tetraploids with Arabidopsis arenosa tetraploids occured post WGD such that processes, namely cell division, will have already relatively stabilised so hybridisation is providing novel traits to withstand selective pressures. It is expected that the allotetraploids will sequentially reduce to a diploid state, thus producing the Arabidopdsis taxa with more genetic variability.
 
 The below code is to be ran in alternating R, Python and UNIX environments
 
@@ -388,12 +388,12 @@ mymap <- leaflet() %>%
   setView(lng = 15.2551, lat = 50, zoom = 5) %>%
   addTiles()
 
-mymap <- mymap %>% addMarkers(lng = 14.722019, lat = 50.533611, popup = "BZD")
-mymap <- mymap %>% addMarkers(lng = 10.582812, lat = 51.583498, popup = "SCT")
-mymap <- mymap %>% addMarkers(lng = 16.248345, lat = 49.090359, popup = "TEM")
-mymap <- mymap %>% addMarkers(lng = 14.482233, lat = 50.116151, popup = "PEK")
+mymap <- mymap %>% addMarkers(lng = 14.722019, lat = 50.533611, popup = "BZD", label = "BZD",labelOptions = labelOptions(noHide = TRUE))
+mymap <- mymap %>% addMarkers(lng = 10.582812, lat = 51.583498, popup = "SCT", label = "SCT",labelOptions = labelOptions(noHide = TRUE))
+mymap <- mymap %>% addMarkers(lng = 16.248345, lat = 49.090359, popup = "TEM", label = "TEM",labelOptions = labelOptions(noHide = TRUE))
+mymap <- mymap %>% addMarkers(lng = 14.482233, lat = 50.116151, popup = "PEK", label = "PEK",labelOptions = labelOptions(noHide = TRUE))
 mymap <- mymap %>% addMarkers(lng = 15.611308, lat = 47.876394, popup = "OCH")
-mymap <- mymap %>% addMarkers(lng = 17.285185, lat = 46.773573, popup = "GYE")
+mymap <- mymap %>% addMarkers(lng = 17.285185, lat = 46.773573, popup = "GYE", label = "GYE",labelOptions = labelOptions(noHide = TRUE))
 mymap <- mymap %>% addMarkers(lng = 16.038565, lat = 47.780388, popup = "JOH")
 mymap <- mymap %>% addMarkers(lng = 15.426401, lat = 48.294661, popup = "KAG")
 mymap <- mymap %>% addMarkers(lng = 16.269984, lat = 48.092981, popup = "LIC")
@@ -401,19 +401,19 @@ mymap <- mymap %>% addMarkers(lng = 15.552699, lat = 48.396128, popup = "LOI")
 mymap <- mymap %>% addMarkers(lng = 15.560472, lat = 48.381430, popup = "MAU")
 mymap <- mymap %>% addMarkers(lng = 16.267199, lat = 48.079485, popup = "MOD")
 mymap <- mymap %>% addMarkers(lng = 15.349241, lat = 48.239088, popup = "PIL")
-mymap <- mymap %>% addMarkers(lng = 15.475190, lat = 48.389408, popup = "SCB")
-mymap <- mymap %>% addMarkers(lng = 15.475190, lat = 48.389408, popup = "SWB")
+mymap <- mymap %>% addMarkers(lng = 15.393005, lat = 48.2742817, popup = "SCB")
+mymap <- mymap %>% addMarkers(lng = 15.40084, lat = 48.3403, popup = "SWB")
 mymap <- mymap %>% addMarkers(lng = 15.698451, lat = 47.937742, popup = "HAB")
-mymap <- mymap %>% addMarkers(lng = 15.475190, lat = 48.389408, popup = "ROK")
-mymap <- mymap %>% addMarkers(lng = 15.475190, lat = 48.389408, popup = "FRE")
+mymap <- mymap %>% addMarkers(lng = 15.68304, lat = 47.9053, popup = "ROK")
+mymap <- mymap %>% addMarkers(lng = 15.57118, lat = 47.99405, popup = "FRE")
 mymap <- mymap %>% addMarkers(lng = 15.542146, lat = 47.816197, popup = "KEH")
 
 mymap
 ```
-Add in the latitude and longitude coordinates for your sample populations and their names.
+SetView() is used to set the central coordinates of the map produced (the ones used in the above coordinates are central Europe) and the zoom is set to 5. Add in the latitude and longitude coordinates for your sample populations and their names. Coordinates for the data used in this study were obtained from the sample map provided, some data was missing so BZD, SCT, TEM, PEK and GYE coordinates were estimated using the description of where they were sampled.
 
 ![Annotated Map](Figures/annotated_map.png)
-I have annotated the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK so this supports the hypothesis that PC2 seperates the populations by geography. However, GYE is further South from the sample cluster, but it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
+I have annotated the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE using the labelOptions() command. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK so this supports the hypothesis that PC2 seperates the populations by geography. However, GYE is further South from the sample cluster, but it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
 
 ### For further analysis you can plot the PCA by individuals:
 
@@ -641,13 +641,13 @@ This code plots the data as individuals and saves a .tre file in their populatio
 The following plot is produced for the data I am using:
 ![NJ](Figures/NJ.png)
 
-This tree is unrooted and follows the same trends as seen earlier: LIC and MOD branch together as they are the purest lyrata, JOH (one of the new populations) branches with these two and clusters with them on the PCA meaning it must be a pure lyrata. GYE branches on its own which is the same occurence as the PCA. 
+This tree is unrooted and follows the same trends as seen with the PCA and purity figure: LIC and MOD branch together as they are the purest lyrata, and share a recent common ancester. JOH (one of the new populations) branches with these two and clusters with them on the PCA meaning it must be a pure lyrata. The SCT, PEK and TEM populations, which we first saw clustering seperately on the PCA and then discovered a geographical similarity, branch as the same trio, showing a genetic liklihood. Other trends show and are easier to see when uploading to the SplitsTree software.
 
 ### SplitsTree
 
 <a name="splitstree"></a>
 
-Upload your .tre file to the SplitsTree software.
+After downloading SplitsTree (instructions at the top of the page) ipload your .tre file to the SplitsTree software by navigating to [File] then [open]. Once loaded select *[Tree]* then [NJ] to view your tree as a midpoint rooted neighbour joined tree.
 
 ![SplitsTree](Figures/SplitsTree.png)
 
