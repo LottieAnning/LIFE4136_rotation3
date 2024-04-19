@@ -140,7 +140,7 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 <a name="gatk"></a>
 
-In a UNIX command line, activate your gatk environment: 
+In a UNIX command line, activate the gatk environment created earlier: 
 ```
 conda activate /[path_to_virtual_environment]/[virtual_environment_name]
 ```
@@ -503,13 +503,13 @@ paste -d '\t' ~/final_populations/faststructure_files/*faststructure_popnames.tx
 cat ~/final_omicsspeaks_output/omics_speaks_K4.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > ~/final_omicsspeaks_output/omics_speaks_K4.csv
 ```
 ### Structure Plot
-Upload your .csv file to Structure Plot, which can be access on the web via: http://omicsspeaks.com/strplot2/
+Upload your .csv file to Structure Plot, which can be accessed on the web via: http://omicsspeaks.com/strplot2/
 
 Adjust which k value you are using before submitting
 
 ![Structure Plot](Figures/final_fs.png)
 
-The above plot is at k = 2, with KEH far left plotting as almost full arenosa (expected from previous knowledge), BZD, OCH, FRE, ROK and HAB plotting as hybrids and the rest plotting as pure lyrata (expected).
+The above plot is at k = 2, with KEH (far left) plotting as almost full arenosa (expected from previous knowledge), BZD, OCH, FRE, ROK and HAB plotting as hybrids and the rest plotting as pure lyrata (expected).
 
 ## Allele Frequency Spectrum
 
