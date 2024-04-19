@@ -46,7 +46,7 @@ The below code is to be ran in alternating R, Python and UNIX environments
   * **StAMPP** version 1.6.3 or higher, simply install by typing: ```install.pacakges(StAMPP)``` into the R command line
   * **tidyr** version 1.3.0 or higher, simply install by typing: ```install.pacakges(tidyr)``` into the R command line
   * **vcfR** version 1.15.0 or higher, simply install by typing: ```install.pacakges(vcfR)``` into the R command line
-* To run *gatk* **version 4.2.2.0** is required, first create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```, then download the package: https://github.com/broadinstitute/gatk/releases, and follow installation instructions. Other dependencies are:
+* To run *gatk*, **version 4.2.2.0** is required, first create a virtual environment: ```conda create --name /shared/apps/conda/bio2```, then download the package: https://github.com/broadinstitute/gatk/releases, and follow installation instructions. Other dependencies are:
   * **Conda version 23.11.0**
   * **Python version 3.8.12**
   * **SAMtools version 1.19.2** which can be downloaded here: https://www.htslib.org/download/
@@ -63,7 +63,7 @@ The below code is to be ran in alternating R, Python and UNIX environments
 
 <a name="files_required"></a>
 
-* A **vcf** with all your samples
+* A **vcf** with all your samples, in this repository it is 'Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf'
 * A reference **fasta file** to which your reads were aligned to
 
 ## Initial Visualisation of Data
@@ -90,7 +90,7 @@ Read in vcf:
 ```
 vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
-Convert your vcf into a genlight object using the create_genlight_object.R script
+Convert your vcf into a genlight object using the **create_genlight_object.R** script
 
 ### Check your data - this section is optional:
 
@@ -111,7 +111,7 @@ If you want to see the variety of ploidy in sample, run: ```unique(ploidy(aa.gen
 
 <a name="initial_pca"></a>
 
-This will allow for the discovery of potential trends in your data and allow for preliminary visualisation, instructions are in the PCA.R script.
+This will allow for the discovery of potential trends in your data and allow for preliminary visualisation, instructions are in the **PCA.R** script.
 
 This is what my first PCA looked like:
 
@@ -140,40 +140,7 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 <a name="gatk"></a>
 
-In a UNIX command line, activate the gatk environment created earlier: 
-```
-conda activate /[path_to_virtual_environment]/[virtual_environment_name]
-```
-Index your reference fasta file: 
-```
-samtools faidx [name_of_your_reference_file].fasta
-```
-Create a dictionary file from your reference fasta: 
-```
-gatk CreateSequenceDictionary -R [name_of_your_reference_file].fasta
-```
-Create a filtered .args file with the populations you wish to include (in this example I filter for only tetraploids, the structure of the code is 'BZD-....' for example because the sample id's in the data are in the format: 'BZD-01tl' where 'BZD' is the population name and the following characters are the individual id): 
-```
-grep -o -E 'BZD-....|PEK-....|SCT-....|TEM-....|GYE-....|JOH-....|KAG-....|LIC-....|LOI-....|MAU-....|MOD-....|PIL-....|SCB-....|SWB-....|HAB-....|ROK-....|FRE-....|OCH-....|KEH-....' [name_of_your_vcf].vcf > tetraploid.args
-```
-Filter your vcf:
-```
-gatk SelectVariants -R [name_of_your_reference_file].fasta -V [name_of_your_vcf].vcf -sn tetraploid.args -O tetraploid.vcf 
-```
-Deactivate your gatk environment: 
-```
-conda deactivate
-```
-
-### If you are using a HPC download the vcf via a web browser: 
-
-<a name="hpc"></a>
-
-Create the webbrowser: 
-```
-python3 -m http.server 36895
-```
-Access your web address and download the file: ```http://[your_HPC_ip]:36895```
+Run the **filter_vcf.sh** script, chaning the populations on line 11 to those you require
 
 ### Re-run the PCA:
 
