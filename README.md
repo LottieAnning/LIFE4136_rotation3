@@ -46,6 +46,10 @@ The below code is to be ran in alternating R, Python and UNIX environments
   * **StAMPP** version 1.6.3 or higher, simply install by typing: ```install.pacakges(StAMPP)``` into the R command line
   * **tidyr** version 1.3.0 or higher, simply install by typing: ```install.pacakges(tidyr)``` into the R command line
   * **vcfR** version 1.15.0 or higher, simply install by typing: ```install.pacakges(vcfR)``` into the R command line
+* To run *gatk* **version 4.2.2.0** is required, first create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```, then download the package: https://github.com/broadinstitute/gatk/releases, and follow installation instructions. Other dependencies are:
+  * **Conda version 23.11.0**
+  * **Python version 3.8.12**
+  * **SAMtools version 1.19.2** which can be downloaded here: https://www.htslib.org/download/
 * To run the scripts for *fastStructure* **Python version 2.7.18** is required, to enable the use of this, create a virtual enviornmnet: ```conda create -y -n faststructure python=2.7.18```
   * **faststructure** version 0.0.0, which can be cloned here: git clone https://github.com/rajanil/fastStructure
   * **scipy** version 1.2.1, which can be installed in a python 2 environment by: pip install scipy
@@ -53,13 +57,7 @@ The below code is to be ran in alternating R, Python and UNIX environments
   * **utils** version 0.9.0, which can be installed in a python 2 environment by: pip install utils 
   * **parse_bed**
   * **parse_str**
-* To run the *Cochlearia_create_structure_file.py* script for *fastStructure* and *downloading files from a High Power Computer (HPC)* **Python version 3.8.12** is required along with:
-  * .
-* To run *gatk* **version 4.2.2.0** is required, first create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```, then download the package: https://github.com/broadinstitute/gatk/releases, however a HPC with an existing version is recommended as this is a large package. Other dependencies are:
-  * **Conda version 23.11.0**
-  * **SAMtools version 1.19.2** which can be downloaded here: https://www.htslib.org/download/
-* To plot the *Neighbour Joining (NJ) Trees* **Splits tree of version 6.2.2-beta** is required which can be downloaded at:	https://github.com/husonlab/splitstree6
-* **structure plot?**
+* To plot the *Neighbour Joining (NJ) Trees* **Splits tree of version 6.2.2-beta** is required which can be downloaded at: https://github.com/husonlab/splitstree6
 
 ## Files Required
 
@@ -825,7 +823,7 @@ deactivate conda environment
 ```
 conda deactivate
 ```
-### Run code to create csv file necessary for ommics speaks. 
+### Run code to create csv file necessary for structure plot
 for K3
 ```
 paste -d '\t' ~/final_populations/faststructure_files/*faststructure_popnames.txt ~/faststructure_output/final_svg_files/filtered_populations.3.meanQ > \
@@ -848,7 +846,7 @@ paste -d '\t' ~/final_populations/faststructure_files/*faststructure_popnames.tx
 cat ~/final_omicsspeaks_output/omics_speaks_K4.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > ~/final_omicsspeaks_output/omics_speaks_K4.csv
 ```
 ### Structure Plot
-Upload your .csv file to Strucutre Plot, which can be access on the web via: http://omicsspeaks.com/strplot2/
+Upload your .csv file to Structure Plot, which can be access on the web via: http://omicsspeaks.com/strplot2/
 
 Adjust which k value you are using before clicking submit
 
@@ -910,9 +908,20 @@ From the filtered plot it is clear to see there is still a central peak in allot
 ### Creating allele frequency histograms
 
 <a name="histogram"></a>
+Create a populations file:
+```
+individual_names <- indNames(aa.genlight)
+populations <- as.character(pop(aa.genlight))
+data <- data.frame(individual_names, populations)
+write.table(data, "pops.txt", sep = "\t", row.names = FALSE, col.names = FALSE)
+```
+Then in a Unix environment:
 
-Firstly, in a Unix environment:
-This requires the 'pops.txt' file created earlier for fastStructure and the poly_freq.c script. 
+Remove the quotation marks:
+```
+sed 's/"//g' pops.txt > populations.txt
+```
+This requires the poly_freq.c script. 
 
 Compile the scipt into an executable environment called poly_freq:
 ```
@@ -920,7 +929,7 @@ gcc poly_freq.c -o poly_freq -lm
 ```
 Execute the script:
 ```
- ./poly_freq -vcf [title_of_your_vcf].vcf -pops pops.txt > info.tsv
+ ./poly_freq -vcf [title_of_your_vcf].vcf -pops populations.txt > info.tsv
 ```
 This will create a file with population-specific allele frequencies
 
@@ -928,15 +937,20 @@ Now read the tsv file into R:
 ```
 df <- read.table(file ='info.tsv', header = TRUE, sep = '\t')
 ```
-Store allele frequencies of the population you want to plot in a variable
+Store allele frequencies of the population you want to plot in a variable:
 ```
-allele_frequencies <- df$BZD
+allele_frequencies <- df$HAB[df$HAB > 0.1]
 ```
-#### plot a histogram of the results
+Plot a histogram of the results
 ```
-ggplot(data=df, aes(x=allele_frequencies)) + geom_histogram(color='black',fill='white')
+ggplot(data = data.frame(allele_frequencies), aes(x = allele_frequencies)) +
+  geom_histogram(color = 'black', fill = 'white', bins = 15) +
+  labs(x = "Allele Frequencies", y = "Count", title = "AFS of HAB")
 ```
-![BZD Histogram](Figures/BZD_histogram.png)
+Repeat the previous two steps for each population by changing the 3 instances of 'HAB'. 
+
+
+![All AFSs](Figures/all_afs.png)
 
 ## Creating Selection Scans
 
