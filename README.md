@@ -140,7 +140,7 @@ As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2
 
 <a name="gatk"></a>
 
-Run the **filter_vcf.sh** script, chaning the populations on line 11 to those you require
+Run the **filter_vcf.sh** script, changing the populations on line 11 to those you require
 
 ### Re-run the PCA:
 
@@ -150,13 +150,13 @@ In R, read in the vcf:
 ```
 vcf <- read.vcfR("tetraploid.vcf")
 ```
-Convert to a genlight object:
+Convert to a genlight object using the function you have already defined from the **create_genlight_object.R** script:
 ```
 aa.genlight <- vcfR2genlight.tetra(vcf)
 locNames(aa.genlight) <- paste(vcf@fix[,1],vcf@fix[,2],sep="_")
 pop(aa.genlight)<-substr(indNames(aa.genlight),1,3) 
 ```
-Run a PCA and plot:
+Run a PCA (using the function you have already defined in **PCA.R** script) and plot:
 ```
 pca.2 <- glPcaFast(aa.genlight, nf=300)
 s.class(pca.2$scores, pop(aa.genlight), xax=1, yax=2, col=transp(col,.6), ellipseSize=0, starSize=0, ppoints.cex=4, paxes.draw=T, pgrid.draw =F, xlab = "PC1", ylab = "PC2")
@@ -196,16 +196,16 @@ mymap <- mymap %>% addMarkers(lng = 15.542146, lat = 47.816197, popup = "KEH")
 
 mymap
 ```
-SetView() is used to set the central coordinates of the map produced (the ones used in the above coordinates are central Europe) and the zoom is set to 5. Add in the latitude and longitude coordinates for your sample populations and their names. Coordinates for the data used in this study were obtained from the sample map provided, some data was missing so BZD, SCT, TEM, PEK and GYE coordinates were estimated using the description of where they were sampled.
+SetView() is used to set the central coordinates of the map produced (the ones used in the above coordinates are central Europe) and the zoom is set to 5. Add in the latitude and longitude coordinates for your sample populations and their names. Coordinates for the data used in this study were obtained from the sample map provided, the specific coordinates were missing for BZD, SCT, TEM, PEK and GYE so they were estimated using the description of where they were sampled.
 
 ![Annotated Map](Figures/annotated_map.png)
-I have annotated the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE using the labelOptions() command. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK so this supports the hypothesis that PC2 seperates the populations by geography. However, GYE is further South from the sample cluster, but it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
+Using the labelOptions() function, the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE were highlighted. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK so this supports the hypothesis that PC2 seperates the populations by geography. However, GYE is further South from the sample cluster, but it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
 
 ### For further analysis you can plot the PCA by individuals:
 
 <a name="third_pca"></a>
 
-Run the individuals_PCA.R script.
+Run the **individuals_PCA.R** script.
 
 ![Individuals PCA](Figures/individuals_pca.png)
 
@@ -217,19 +217,9 @@ From observation alone it is clear to see that some individuals are plotting inc
 
 ![Annotated Individuals PCA](Figures/annotated_individuals_pca.png)
 
-Returning to gatk, filter out the impure individuals:
-```
-grep -o -E 'BZD-....|PEK-....|SCT-....|TEM-....|GYE-....|JOH-....|KAG-(01|02|04|05|06|07|08)..|LIC-....|LOI-....|MAU-....|MOD-....|PIL-....|SCB-....|SWB-....|HAB-....|ROK-....|FRE-(01|02|03|04|05|07)tl|OCH-(01|02|03|04|06|07|08)tl|KEH-(01|02|03|04|05)tl' Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf > filtered_tetraploid.args
-```
-Filter the vcf:
-```
-gatk SelectVariants -R [name_of_your_reference_file].fasta -V [name_of_your_vcf].vcf -sn filtered_tetraploid.args -O filtered_tetraploid.vcf 
-```
-Download the vcf and then read it into your local pc in R:
-```
-vcf <- read.vcfR("filtered_tetraploids.vcf")
-```
-Re-run the PCA using the individuals_PCA.R script
+Re run the filter_vcf.sh script, changing the '-opre' flag on line 14 to 'filtered_tetraploid.args', adding the '-xcl' flag to line 15 followed by 'samples_to_exclude.args' which is a file provided at the top of the page consisting of the 9 impure individuals and finally change the '--output' flag on line 30 to 'filtered_tetraploids.vcf'.
+
+Load this vcf into R (```vcf <- read.vcfR("filtered_tetraploids.vcf")```) and re-run the PCA using the **individuals_PCA.R** script
 
 ![Filtered PCA](Figures/filtered_pca.png)
 
@@ -243,31 +233,7 @@ It is obvious by now that PC1 splits individuals closest to arenosa (left), hybr
 
 <a name="nei"></a>
 
-Create a matrix of pairwise distances for **individuals**:
-```
-aa.D.ind <- stamppNeisD(aa.genlight, pop = FALSE)
-```
-Create a matrix of pairwise distances for **populations**:
-```
-aa.D.pop <- stamppNeisD(aa.genlight, pop = TRUE)
-```
-Create the distance objects:
-```
-colnames(aa.D.ind) <- rownames(aa.D.ind)
-aa.D.ind.dist <-as.dist(aa.D.ind, diag=T)
-attr(aa.D.ind.dist, "Labels") <-rownames(aa.D.ind)
-
-colnames(aa.D.pop) <- rownames(aa.D.pop) 
-aa.D.pop.dist <-as.dist(aa.D.pop, diag=T)
-attr(aa.D.pop.dist, "Labels") <-rownames(aa.D.pop)
-```
-Plot and save the Neighbour Joining (NJ) tree:
-```
-plot(nj(aa.D.ind), typ="unrooted", cex=0.7)
-title(expression("Neighbour-joining tree of distance-based analysis of "*italic(Arabidposis)*" "))
-write.tree(nj(aa.D.pop),file="NJ.distance_tree_outgroups.tre")
-```
-This code plots the data as individuals and saves a .tre file in their populations for plotting in SplitsTree later. You can alter this in the code just above where it says 'plot(nj(aa.**ind**)...' and 'write.tree(nj(aa.D.**pop**)' change 'ind' and 'pop' accordingly. It is useful to plot as individuals to see if there are still impure data or any occurences which are different to what is expected.
+Run the NEI.R script which consists of code provided by Ana  C. da Silva. The scrpit plots the data as individuals and saves a .tre file in their populations for plotting in SplitsTree later. You can alter this in the code where it says 'plot(nj(aa.**ind**)...' and 'write.tree(nj(aa.D.**pop**)' change 'ind' and 'pop' accordingly. It is useful to plot as individuals to see if there are still impure data or any occurences which are different to what is expected.
 
 The following plot is produced for the data I am using:
 ![NJ](Figures/NJ.png)
