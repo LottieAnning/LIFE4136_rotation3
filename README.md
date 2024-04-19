@@ -285,89 +285,17 @@ Autopolyploids always follow this exponential distribution, where the increase i
 
 <a name="allotetraploid"></a>
 
-Download the files 'arenosa_632.txt' and 'lyrata_272_with_some_hybrids.txt' to the working directory you set earlier. These files contain mostly tetraploid data of arenosa and lyrata samples which we can merge to create an allotetraploid. If you are using different populations locate files which contain atleast allele frequencies at specific positions on chromosomes.
+Return to R studio and download the files 'arenosa_632.txt' and 'lyrata_272_with_some_hybrids.txt' to the working directory you set earlier. These files contain mostly tetraploid data of arenosa and lyrata samples which we can merge to create an allotetraploid. If you are using different populations locate files which contain atleast allele frequencies at specific positions on chromosomes. Run the **synthetic_allotetraploid.R** script.
 
-Read the data in:
-```
-arenosa_632 <- read.table(file ='arenosa_632.txt' ,header = TRUE,sep = '\t')
-lyrata_272 <- read.table(file ='lyrata_272_with_some_hybrids.txt' ,header = TRUE,sep = '\t')
-```
-Merge the two data frames based on the 'POS' column:
-```
-merged_df <- merge(arenosa_632, lyrata_272, by = "POS", suffixes = c("_arenosa", "_lyrata"))
-```
-Calculate the mean of the 'AF' column for matching rows:
-```
-merged_df$Mean_AF <- (merged_df$AF_arenosa + merged_df$AF_lyrata) / 2
-```
-Create a new data frame with 'POS' and 'Mean_AF':
-```
-new_df <- merged_df[, c("POS", "Mean_AF")]
-```
-This new data frame has the mean allele frequencies at the same sites for lyrata and arenosa.
-
-Plot:
-```
-ggplot(data = new_df, aes(Mean_AF)) +
-  geom_histogram(color='black',fill='white', bins = 100)
-```
-This plot is shown below as 'Un-Filtered' because we had to filter the data as the uncommon SNPs conceal potential trends in the data (you can see a slight peak in the middle however its masked because theres such a high count of in-frequent alleles), so filter the mean allele frequency to be greater than 0.1:
-```
-filtered_df <- new_df[new_df$Mean_AF > 0.1, ]
-```
-Now plot:
-```
-ggplot(data = filtered_df, aes(Mean_AF)) +
-  geom_histogram(color='black',fill='white', bins = 100)
-```
 ![Synthetic Plots](Figures/synthetic.png)
 
-From the filtered plot it is clear to see there is still a central peak in allotetraploids it it just less defined than the allohexaploid plot (note this may be becuase of different sample or bin sizing). Now lets compare our data to this allotetraploid.
+The filtered plot is set to allele freqeucy >0.1 to remove the skew created by SNPs. From the filtered plot it is clear to see there is still a central peak in allotetraploids it it just less defined than the allohexaploid plot (note this may be becuase of different sample or bin sizing). Now lets compare our data to this allotetraploid.
 
 ### Creating allele frequency histograms
 
 <a name="histogram"></a>
-Create a populations file:
-```
-individual_names <- indNames(aa.genlight)
-populations <- as.character(pop(aa.genlight))
-data <- data.frame(individual_names, populations)
-write.table(data, "pops.txt", sep = "\t", row.names = FALSE, col.names = FALSE)
-```
-Then in a Unix environment:
 
-Remove the quotation marks:
-```
-sed 's/"//g' pops.txt > populations.txt
-```
-This requires the poly_freq.c script. 
-
-Compile the scipt into an executable environment called poly_freq:
-```
-gcc poly_freq.c -o poly_freq -lm
-```
-Execute the script:
-```
- ./poly_freq -vcf [title_of_your_vcf].vcf -pops populations.txt > info.tsv
-```
-This will create a file with population-specific allele frequencies
-
-Now read the tsv file into R:
-```
-df <- read.table(file ='info.tsv', header = TRUE, sep = '\t')
-```
-Store allele frequencies of the population you want to plot in a variable:
-```
-allele_frequencies <- df$HAB[df$HAB > 0.1]
-```
-Plot a histogram of the results
-```
-ggplot(data = data.frame(allele_frequencies), aes(x = allele_frequencies)) +
-  geom_histogram(color = 'black', fill = 'white', bins = 15) +
-  labs(x = "Allele Frequencies", y = "Count", title = "AFS of HAB")
-```
-Repeat the previous two steps for each population by changing the 3 instances of 'HAB'. 
-
+Execute the **allele_frequency_plots.R** script in R, which also requires the execution of the **poly_freq.c** script in a Unix enviornment. The following five plots are for the five hybrid populations 
 
 ![All AFSs](Figures/all_afs.png)
 
