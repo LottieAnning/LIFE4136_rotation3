@@ -46,8 +46,13 @@ The below code is to be ran in alternating R, Python and UNIX environments
   * **StAMPP** version 1.6.3 or higher, simply install by typing: ```install.pacakges(StAMPP)``` into the R command line
   * **tidyr** version 1.3.0 or higher, simply install by typing: ```install.pacakges(tidyr)``` into the R command line
   * **vcfR** version 1.15.0 or higher, simply install by typing: ```install.pacakges(vcfR)``` into the R command line
-* To run the *structure.py* and *chooseK.py* scripts for *fastStructure* **Python version 2.7.18** is required along with:
-  * .
+* To run the scripts for *fastStructure* **Python version 2.7.18** is required, to enable the use of this, create a virtual enviornmnet: ```conda create -y -n faststructure python=2.7.18```
+  * **faststructure** version 0.0.0, which can be cloned here: git clone https://github.com/rajanil/fastStructure
+  * **scipy** version 1.2.1, which can be installed in a python 2 environment by: pip install scipy
+  * **numpy** version 1.16.5, which can be installed in a python 2 environment by: pip install numpy
+  * **utils** version 0.9.0, which can be installed in a python 2 environment by: pip install utils 
+  * **parse_bed**
+  * **parse_str**
 * To run the *Cochlearia_create_structure_file.py* script for *fastStructure* and *downloading files from a High Power Computer (HPC)* **Python version 3.8.12** is required along with:
   * .
 * To run *gatk* **version 4.2.2.0** is required, first create a virtual environment: ```conda create --name /[path_to_virtual_environment]/[virtual_environment_name]```, then download the package: https://github.com/broadinstitute/gatk/releases, however a HPC with an existing version is recommended as this is a large package. Other dependencies are:
@@ -661,74 +666,191 @@ Interestingly, SWB and MAU are outgrouped. From the Marburger et al., purity plo
 
 <a name="fast_structure"></a>
 
-#### In R - create a file containing individual ids and population names:
-```
-individual_names <- indNames(aa.genlight)
-populations <- as.character(pop(aa.genlight))
-data <- data.frame(individual_names, populations)
-write.table(data, "populations.txt", sep = "\t", row.names = FALSE, col.names = FALSE)
-```
-This will create a tab deliminated file with the individual name and their population
+### Prepare your environment:
 
-### In a UNIX environment:
+make a directory for the omicsspeaks csv output
+```
+mkdir final_omicsspeaks_output
+```
+make a directory for population specific .str files we produce when reordering the faststructure input
+```
+mkdir individual_str_output
+```
+make a directory for all filtered vcf output data
+```
+mkdir final_populations
+```
+make directory to store all the output for the individuals
+```
+mkdir individual_population_files
+```
+make directories to store faststructure output
+```
+mkdir -p faststructure_output/vcf_dir
+mkdir faststructure_output/final_svg_files
+```
+get the 'attributes' of your environment 
+```
+source $HOME/.bash_profile
+```
+### Getting a filtered vcf. The populations should be given in the order you want the final faststructure output to be in. 
+The retrieve_IDs_updated_FIX.py script is required here, along with an .args file of what populations you want to exclude (same from earlier when removing impure populations for the PCA), the file I used can be found above and is called 'samples_to_exclude.args'
+activate conda env
+```
+conda activate /shared/apps/conda/bio2
+```
+get sample names to include in the filtered vcf, change the --pop flag accordingly
+```
+python3 retrieve_IDs_updated_FIX.py \
+	-i [name_of_your_vcf].vcf \
+	--pop 'KEH','BZD','OCH','FRE','ROK','HAB','KAG','MAU','JOH','MOD','LIC','PEK' \
+	--same_file 'yes' \
+	-odir final_populations \
+	-opre diploids_hybird_1arenosa_1lyrata \
+	--fast_struc 'yes' \
+	-xcl samples_to_exclude.args 
+```
+produce a dictionary file for your reference fasta (if you already followed these steps earlier under [Filter Data for Further Analysis of Trends / Filter out impure individuals] skip the next two lines.
+```
+gatk CreateSequenceDictionary \
+	-R [name_of_your_reference_file].fasta
+```
+create index file for the fasta file
+```
+samtools faidx [name_of_your_reference_file].fasta
+```
+index the vcf file
+```
+gatk IndexFeatureFile \
+	-I [name_of_your_vcf].vcf
+```
+filter the vcf to only contain biallelic variants we are interested in
+```
+gatk SelectVariants \
+	-R [name_of_your_reference_file].fasta \
+	-V [name_of_your_vcf].vcf \
+	-sn final_populations/gatk_args_output/*.args \
+	--output final_populations/diploids_hybird_1arenosa_1lyrata.vcf
+```
+deactivate conda env
+```
+conda deactivate
+```
+### Producing individual vcf files for each of the populations you have narrowed down to 
+activate conda environment
+```
+conda activate /shared/apps/conda/bio2
+```
+Get sample names to include in the filtered vcf, i.e. do everything again but produce files for the individual populations
+```
+python3 retrieve_IDs_updated_FIX.py \
+        -i [name_of_your_vcf].vcf \
+        --pop 'KEH','BZD','OCH','FRE','ROK','HAB','KAG','MAU','JOH','MOD','LIC','PEK' \
+        --same_file 'no' \
+        -odir individual_population_files \
+	-xcl samples_to_exclude.args 
+```
+go through all the arg files to produce a vcf for each individual population
+```
+for file in individual_population_files/gatk_args_output/*.args ; do
+	
+	# get name of just file and not the full path
+	individual_file=$(basename "$file")
+	
+	## filter the vcf to only contain biallelic variants we are interested in
+	gatk SelectVariants \
+		-R [name_of_your_reference_file].fasta \
+		-V [name_of_your_vcf].vcf \
+		-sn "$file" \
+		--output individual_population_files/"$individual_file.vcf"
+done
+```
+deactivate conda environment
+```
+conda deactivate
+```
+### Convert filtered vcf file to a str file
+The Cochlearia_create_structure_file.py script is required here.
 
-First remove all the quotation marks from the populations file you just created:
+move file with filtered vcf to the vcf directory
 ```
-sed 's/"//g' populations.txt > pops.txt
+cp final_populations/*.vcf faststructure_output/vcf_dir
 ```
-Download the Cochlearia_create_structure_file.py script, make the 5kbthin_MAF2pct/ directory with the mkdir command, ensure you move the vcf file you want the script to run on into this directory. This will convert polyploids data to a format acceptable to fastSTRUCTURE.
-
-Now run:
+#convert polyploids data to format acceptable to fastSTRUCTURE
 ```
-python3 Cochlearia_create_structure_file.py -v 5kbthin_MAF2pct/ -o 5kbthin_MAF2pct -s true
+python3 Cochlearia_create_structure_file.py \
+        -v faststructure_output/vcf_dir/ \
+        -o filtered_vcf_converted_to_str \
+        -s true
 ```
-This creates two files: '5kbthin_MAF2pct.StructureInpu.str' and '5kbthin_MAF2pct.StructureInputDiploidized.str' in a directory called 'vcf_to_str'
-
-Now remove the first and last lines of the file so that fastSTRUCTURE can run:
+remove first and last line from .str file
 ```
-sed '1d;$d' 5kbthin_MAF2pct.StructureInputDiploidized.str > diploidized_filtered_tetraploids.str
+sed -i '1d;$d' faststructure_output/vcf_dir/vcf_to_str/filtered_vcf_converted_to_str.StructureInputDiploidized.str
 ```
-Upload to HPC or environment which contains fastSTRUCTURE:
+### Reorder the .str file based on what order we've done
+The reorder_str_file.py, structure.py and chooseK.py scripts are required here.
 ```
-scp diploidized_filtered_tetraploids.str [username]@[HPC_ip_address]:~/
+python3 reorder_str_file.py \
+	-i faststructure_output/vcf_dir/vcf_to_str/filtered_vcf_converted_to_str.StructureInputDiploidized.str \
+	-o faststructure_output/vcf_dir/vcf_to_str/filtered_vcf_converted_to_str.StructureInputDiploidized2.str \
+	-p 'KEH','BZD','OCH','FRE','ROK','HAB','KAG','MAU','JOH','MOD','LIC','PEK' \
+	--str_dir individual_str_output
 ```
-Activate your fastSTRUCTURE environment if this is your choice of methodology:
+activate your conda environment for faststructure
 ```
 conda activate /shared/conda/faststructure
 ```
-Run the fast structure command, this requires the structure.py script. Ensure that your input file doesn't have the '.str' file extension as the script handles this.
+move into final svg directory so all output gets put into there
 ```
-python2 /[pathway_to_file]/structure.py -K 1 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 2 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 3 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 4 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 5 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 6 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 7 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 8 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 9 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
-python2 /[pathway_to_file]/structure.py -K 10 --input=/[pathway_to_file]/diploidized_filtered_tetraploids --output=[output_directory_name]/diploidized_filtered_tetraploids --format=str --full
+cd faststructure_output/final_svg_files
 ```
-Run the following command to discover the best value of k
+run fas structure command on our reordered .str file with different K values
 ```
-python2 /shared/conda/faststructure/bin/chooseK.py --input=diploidized_filtered_tetraploids
+for i in {1..10}; do 
+	echo $i
+	python /shared/conda/faststructure/bin/structure.py \
+		-K $i \
+		--input ~/fast_structure/faststructure_output/vcf_dir/vcf_to_str/filtered_vcf_converted_to_str.StructureInputDiploidized2 \
+		--output ~/fast_structure/faststructure_output/final_svg_files/filtered_populations \
+		--format str \
+		--full
+done
 ```
-The return I recieved:
-**Model complexity that maximizes marginal likelihood = 1**
+run choose K
+```
+python /shared/conda/faststructure/bin/chooseK.py \
+	--input ~/faststructure_output/final_svg_files/filtered_populations
+```
+deactivate conda environment
+```
+conda deactivate
+```
+### Run code to create csv file necessary for ommics speaks. 
+for K3
+```
+paste -d '\t' ~/final_populations/faststructure_files/*faststructure_popnames.txt ~/faststructure_output/final_svg_files/filtered_populations.3.meanQ > \
+~/final_omicsspeaks_output/omics_speaks_K3.tsv
 
-**Model components used to explain structure in data = 2**
-
-Now create an output file to visualise the results:
+cat ~/final_omicsspeaks_output/omics_speaks_K3.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > ~/final_omicsspeaks_output/omics_speaks_K3.csv
 ```
-paste -d '\t' pops.txt diploidized_filtered_tetraploids.3.meanQ > structure_plot.tsv
-cat structure_plot.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > structure_plot.csv
+for K2
 ```
+paste -d '\t' ~/final_populations/faststructure_files/*faststructure_popnames.txt ~/faststructure_output/final_svg_files/filtered_populations.2.meanQ > \
+~/final_omicsspeaks_output/omics_speaks_K2.tsv
 
+cat ~/final_omicsspeaks_output/omics_speaks_K2.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > ~/final_omicsspeaks_output/omics_speaks_K2.csv
+```
+for K4
+```
+paste -d '\t' ~/final_populations/faststructure_files/*faststructure_popnames.txt ~/faststructure_output/final_svg_files/filtered_populations.4.meanQ > \
+~/final_omicsspeaks_output/omics_speaks_K4.tsv
+
+cat ~/final_omicsspeaks_output/omics_speaks_K4.tsv | tr '\t' ',' | tr -s '[:blank:]' ',' > ~/final_omicsspeaks_output/omics_speaks_K4.csv
+```
 ### Structure Plot
+Upload your .csv file to Strucutre Plot, which can be access on the web via: http://omicsspeaks.com/strplot2/
 
-<a name="structure_plot"></a>
-
-Upload your csv and select the K value you used. Plot by 'Ind Labels' which plots by population??
+Adjust which k value you are using before clicking submit
 
 ## Allele Frequency Spectrum
 
@@ -815,4 +937,7 @@ allele_frequencies <- df$BZD
 ggplot(data=df, aes(x=allele_frequencies)) + geom_histogram(color='black',fill='white')
 ```
 ![BZD Histogram](Figures/BZD_histogram.png)
+
+## Creating Selection Scans
+
 
