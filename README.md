@@ -55,8 +55,7 @@ The below code is to be ran in alternating R, Python and UNIX environments
   * **scipy** version 1.2.1, which can be installed in a python 2 environment by: pip install scipy
   * **numpy** version 1.16.5, which can be installed in a python 2 environment by: pip install numpy
   * **utils** version 0.9.0, which can be installed in a python 2 environment by: pip install utils 
-  * **parse_bed**
-  * **parse_str**
+  * **Structure Plot** version 2.0, which can be accessed here: http://omicsspeaks.com/strplot2/
 * To plot the *Neighbour Joining (NJ) Trees* **Splits tree of version 6.2.2-beta** is required which can be downloaded at: https://github.com/husonlab/splitstree6
 
 ## Files Required
@@ -90,6 +89,8 @@ Read in vcf:
 ```
 vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
+
+<a name="#vcf_to_genlight"></a>
 Convert your vcf into a genlight object using the **create_genlight_object.R** script
 
 ### Check your data - this section is optional:
@@ -287,7 +288,7 @@ Autopolyploids always follow this exponential distribution, where the increase i
 
 <a name="allotetraploid"></a>
 
-Return to R studio and download the files 'arenosa_632.txt' and 'lyrata_272_with_some_hybrids.txt' to the working directory you set earlier. These files contain mostly tetraploid data of arenosa and lyrata samples which we can merge to create an allotetraploid. If you are using different populations locate files which contain atleast allele frequencies at specific positions on chromosomes. Run the **synthetic_allotetraploid.R** script.
+Return to R studio and download the files 'arenosa_632.txt.gz' and 'lyrata_272_with_some_hybrids.txt' to the working directory you set earlier. First the arenosa file will need to be unzipped, to do this you need to be in a UNIX environment with the gunzip command ```gunzip arenosa_632.txt.gz```. These files contain mostly tetraploid data of arenosa and lyrata samples which we can merge to create an allotetraploid. If you are using different populations locate files which contain atleast allele frequencies at specific positions on chromosomes. Run the **synthetic_allotetraploid.R** script.
 
 ![Synthetic Plots](Figures/synthetic.png)
 
@@ -302,3 +303,40 @@ Execute the **allele_frequency_plots.R** script in R, which also requires the ex
 ![All AFSs](Figures/all_afs.png)
 
 None of the populations seem to follow the same pattern as the example allotetraploid created above. There is a clear absence of a middle peak which is a conserved trait of allopolyploids. 
+
+## Acknowledgements
+* **adegenet** Jombart, T. (2008) adegenet: a R package for the multivariate analysis of genetic markers. Bioinformatics 24: 1403-1405. doi: 10.1093/bioinformatics/btn129
+Jombart T. and Ahmed I. (2011) adegenet 1.3-1: new tools for the analysis of genome-wide SNP data. Bioinformatics. doi: 10.1093/bioinformatics/btr521
+* **adegraphics** Aurélie Siberchicot, Alice Julien-Laferrière, Anne-Béatrice Dufour, Jean Thioulouse and Stéphane Dray (2017). adegraphics: An S4 Lattice-Based Package for the Representation of Multivariate Data. The R Journal. 9:2. 198--212. https://journal.r-project.org/archive/2017/RJ-2017-042/index.html
+Jean Thioulouse, Stéphane Dray, Anne-Béatrice Dufour, Aurélie Siberchicot, Thibaut Jombart and Sandrine Pavoine (2018). Multivariate Analysis of Ecological Data with ade4. Springer. https://doi.org/10.1007/978-1-4939-8850-1
+dplyr 
+Wickham H, François R, Henry L, Müller K, Vaughan D (2023). _dplyr: A Grammar of Data Manipulation_. R package version 1.1.4, <https://CRAN.R-project.org/package=dplyr>.
+faststructure 
+Anil Raj, Matthew Stephens, and Jonathan K. Pritchard. fastSTRUCTURE: Variational Inference of Population Structure in Large SNP Data Sets , (Genetics) June 2014 197:573-589 [Genetics, Biorxiv]
+gatk, version 4.2.2.0 
+Van der Auwera GA & O'Connor BD. (2020). Genomics in the Cloud: Using Docker, GATK, and WDL in Terra (1st Edition). O'Reilly Media.
+ggplot2 
+ H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+ggrepel 
+Slowikowski K (2024). _ggrepel: Automatically Position Non-Overlapping Text Labels with 'ggplot2'_. R package version 0.9.5, <https://CRAN.R-project.org/package=ggrepel>.
+leaflet 
+Cheng J, Schloerke B, Karambelkar B, Xie Y (2023). _leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library_. R package version 2.2.1, <https://CRAN.R-project.org/package=leaflet>.
+numpy 
+Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2. (Publisher link).
+SAMtools 
+Petr Danecek, James K Bonfield, Jennifer Liddle, John Marshall, Valeriu Ohan, Martin O Pollard, Andrew Whitwham, Thomas Keane, Shane A McCarthy, Robert M Davies, Heng Li. Twelve years of SAMtools and BCFtools. GigaScience, Volume 10, Issue 2, February 2021, giab008, https://doi.org/10.1093/gigascience/giab008
+scipy
+Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson, Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R. J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul van Mulbregt, and SciPy 1.0 Contributors. (2020) SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. Nature Methods, 17(3), 261-272.
+Splits tree
+Daniel H. Huson and David Bryant, Application of Phylogenetic Networks in Evolutionary Studies, Molecular Biology and Evolution, 23(2):254-267 (2006) https://doi.org/10.1093/molbev/msj030.
+StAMPP 
+Pembleton LW, Cogan NOI, Forster JW (2013) StAMPP: an R package for calculation of genetic differentiation and structure of mixed-ploidy level populations. Molecular Ecology Resources 13(5), 946-952
+Structure Plot 
+Ramasamy, R.K., Ramasamy, S., Bindroo, B.B. et al. STRUCTURE PLOT: a program for drawing elegant STRUCTURE bar plots in user friendly interface. SpringerPlus 3, 431 (2014). https://doi.org/10.1186/2193-1801-3-431
+tidyr 
+Wickham H, Vaughan D, Girlich M (2023). _tidyr: Tidy Messy Data_. R package version 1.3.0, <https://CRAN.R-project.org/package=tidyr>.
+vcfR 
+Knaus BJ, Grünwald NJ (2017). “VCFR: a package to manipulate and visualize variant call format data in R.”_Molecular Ecology Resources_, *17*(1), 44-53. ISSN 757, <https://dx.doi.org/10.1111/1755-0998.12549>.
+Knaus BJ, Grünwald NJ (2016). “VcfR: an R package to manipulate and visualize VCF format data.” _BioRxiv_. <https://dx.doi.org/10.1101/041277>.
+![image](https://github.com/LottieAnning/LIFE4136_rotation3/assets/151543431/000628d3-ff69-4db5-bf84-dee609cce53a)
+
