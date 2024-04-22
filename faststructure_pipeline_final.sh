@@ -2,9 +2,9 @@
 
 # This script is going to run the whole faststructure pipeline. Running it will:
 # 1. Produce a filtered vcf with only specific populations
-# 2. Create VCFs for each population in the filtered vcf you created (i.e OCH.vcf,PEK.vcf). This becomes useful later on when trying to find signatures of allopolyploidy
+# 2. Create VCFs for each population in the filtered vcf you created. This becomes useful later on when trying to find signatures of allopolyploidy
 # 3. Convert your filtered vcf into a .str file so it can work with faststructure, and reorders the .str file so the faststructure output is in the order we want.
-# 4. Run faststructure on our data and produce csv files for K values 2-4 in a format acceptable by the ommicsspeaks website 
+# 4. Run faststructure on our data and produce csv files for K values 1-10 in a format acceptable by the ommicsspeaks website 
 
 # Before running you will need:
 # 1. A directory  (~/faststructure), and within that directory there should be:
@@ -16,16 +16,15 @@
     # A. retrieve_IDs_updated_FIX.py
     # B. reorder_str_file.py
     # C. Cochlearia_create_structure_file.py
-    # D. faststructure_pipeline_final.sh
 
 # There are quite a lot of files and directories created from this pipeline but only a few are important. Important output from this pipeline:
-# 1. There should be a directory (~/final_omicsspeaks_output) and it should contain the csv for K values 2-4 which can be put into the ommicsspeaks website
+# 1. There should be a directory (~/final_omicsspeaks_output) and it should contain the csv for K values 1-10 which can be put into the ommicsspeaks website
 # 2. A directory (~/final_populations) that contains the filtered vcf with all the populations you chose. This can be used to put into the R scripts to make PCA and splitstree output
 # 3. A directory (~/individual_population_files) that contains the vcf files for each individual population from the group of populations we settled on. This is useful for calculating allele frequencies
 
 
 # NOTE
-# If you want to change the populations used you will have to change the pops used in line 61, 100 and 161
+# If you want to change the populations used you will have to change the pops used in line 57, 93 and 148
 
 # Actual code 
 
@@ -51,9 +50,6 @@ source $HOME/.bash_profile
 
 # activate conda env outside of script
 conda activate /shared/apps/conda/bio2
-
-# make directory for all filtered vcf output data
-mkdir final_populations
 
 # get sample names to include in the filtered vcf
 python3 retrieve_IDs_updated_FIX.py \
@@ -87,11 +83,7 @@ gatk SelectVariants \
 conda deactivate
 
 ## Part2 Producing individual vcf files for each of the populations you have narrowed down to 
-# activate conda env outside of script
 conda activate /shared/apps/conda/bio2
-
-# make directory to store all the output for the individuals
-mkdir individual_population_files
 
 # get sample names to include in the filtered vcf
 # Now do everything again but produce files for the individual populations
@@ -127,12 +119,6 @@ done
 conda deactivate
 
 ## Part3 Convert filtered vcf file to a str file
-# use python3 in our cloud hpc environment
-# has numpy version 1.19.5
-
-# make directories to store faststructure output
-mkdir -p faststructure_output/vcf_dir
-mkdir faststructure_output/final_svg_files
 
 # remove everything from the directory with vcfs
 # rm faststructure_output/vcf_dir/*.vcf
@@ -168,7 +154,7 @@ conda activate /shared/conda/faststructure
 cd faststructure_output/final_svg_files
 
 ## Part5 run fasstructure command on our reordered .str file with different K values
-for i in {1..4}; do 
+for i in {1..10}; do 
 	echo $i
 	python /shared/conda/faststructure/bin/structure.py \
 		-K $i \
