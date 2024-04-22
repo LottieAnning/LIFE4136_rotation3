@@ -7,32 +7,31 @@ Arabidopsis arenosa (referred to as 'arenosa' henceforth) stands as the sister s
 
 Anticipated is the gradual reduction of allotetraploids to a diploid state over time, thus fostering increased genetic diversity within the Arabidopsis taxa.
 
-The below code is to be ran in alternating R, Python and UNIX environments
+The data that this project is comprised of are diploid and tetraploid in nature. Some of the populations are novel to this project (i.e. were collected after 2019) and such their allo/auto-polyploidy status is unknown. Through various methods such as Principle Component Analysis (PCA), Relatedness Calculations, Structure Plotting and Allele Frequency Spectrums it is expected that the populations will consist of a variety of arenosa and or lyrata genomes. If a population is a hybrid of the sister species it may not necessarily be allopolyploid.  
 
 ## Contents
-- [Dependencies](#dependencies)
-- [Files Required](#files_required)
-- [Initial Visualisation of Data](#initial_visualisation_of_data)
-  - [Converting a VCF into a genlight object](#vcf_to_genlight)
-  - [Sense checking data](#sense_check)
-  - [Running an initial PCA](#initial_pca)
-- [Filtering Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)
-  - [Filtering with GATK](#gatk)
-  - [Downloading files from a HPC](#hpc)
-  - [Re-running the PCA](#second_pca)
-  - [Testing geographical influence](#map)
-  - [Running a PCA on individuals in a population](#third_pca)
-  - [Further filtering with GATK](#further_gatk)
-- [Relatedness Calculations](#relatedness_calculations)
-  - [Nei's distances](#nei)
-  - [SplitsTree](#splitstree)
-- [Fast Structure](#fast_structure)
-  - [Structure plotting](#structure_plot)
-- [Allele Frequency Spectrum](#allele_frequency_spectrum)
-  - [Creating an example allotetraploid](#allotetraploid)
-  - [Creating allele frequency histograms](#histogram)
+- [1. Dependencies](#dependencies)
+- [2. Files Required](#files_required)
+- [3. Initial Visualisation of Data](#initial_visualisation_of_data)
+  - [3.1 Converting a VCF into a genlight object](#vcf_to_genlight)
+  - [3.2 Sense checking data](#sense_check)
+  - [3.3 Running an initial PCA](#initial_pca)
+- [4. Filtering Data for Further Analysis of Trends](#filter_data_for_further_analysis_of_trends)
+  - [4.1 Filtering with GATK](#gatk)
+  - [4.2 Re-running the PCA](#second_pca)
+  - [4.3 Testing geographical influence](#map)
+  - [4.4 Running a PCA on individuals in a population](#third_pca)
+  - [4.5 Further filtering with GATK](#further_gatk)
+- [5. Relatedness Calculations](#relatedness_calculations)
+  - [5.1 Nei's distances](#nei)
+  - [5.2 SplitsTree](#splitstree)
+- [6. Fast Structure](#fast_structure)
+- [7. Allele Frequency Spectrum](#allele_frequency_spectrum)
+  - [7.1 Creating an example allotetraploid](#allotetraploid)
+  - [7.2 Creating allele frequency histograms](#histogram)
+- [8. Acknowledgements](#acknowledgements) 
 
-## Dependencies
+## 1. Dependencies
 
 <a name="dependencies"/>
 
@@ -46,26 +45,26 @@ The below code is to be ran in alternating R, Python and UNIX environments
   * **StAMPP** version 1.6.3 or higher, simply install by typing: ```install.pacakges(StAMPP)``` into the R command line
   * **tidyr** version 1.3.0 or higher, simply install by typing: ```install.pacakges(tidyr)``` into the R command line
   * **vcfR** version 1.15.0 or higher, simply install by typing: ```install.pacakges(vcfR)``` into the R command line
-* To run *gatk*, **version 4.2.2.0** is required, first create a virtual environment: ```conda create --name /shared/apps/conda/bio2```, then download the package: https://github.com/broadinstitute/gatk/releases, and follow installation instructions. Other dependencies are:
-  * **Conda version 23.11.0**
-  * **Python version 3.8.12**
+* To run *gatk*, **version 4.2.2.0** is required, first create a virtual environment, for example: ```conda create --name /shared/apps/conda/bio2```, change the name and location accordingly. Then download the package: https://github.com/broadinstitute/gatk/releases, and follow installation instructions. Other dependencies are:
+  * **Conda version 23.11.0** which can be downloaded here: https://conda.io/projects/conda/en/latest/user-guide/install/index.html simply choose your device type (Mac, Windows or LINUX), choose the miniconda installer as this is free and will suffice for this project, download the installer, verify your installer with hashers (more information on how to do this for your specific device type are on the website) and download the package.
+  * **Python version 3.8.12** your device may already have python installed, to check type ```python3 version``` in a command prompt (windows) or terminal (mac), if not download it here: https://www.python.org/downloads/release/python-3123/
   * **SAMtools version 1.19.2** which can be downloaded here: https://www.htslib.org/download/
-* To run the scripts for *fastStructure* **Python version 2.7.18** is required, to enable the use of this, create a virtual enviornmnet: ```conda create -y -n faststructure python=2.7.18```
-  * **faststructure** version 0.0.0, which can be cloned here: git clone https://github.com/rajanil/fastStructure
-  * **scipy** version 1.2.1, which can be installed in a python 2 environment by: pip install scipy
-  * **numpy** version 1.16.5, which can be installed in a python 2 environment by: pip install numpy
-  * **utils** version 0.9.0, which can be installed in a python 2 environment by: pip install utils 
-  * **Structure Plot** version 2.0, which can be accessed here: http://omicsspeaks.com/strplot2/
 * To plot the *Neighbour Joining (NJ) Trees* **Splits tree of version 6.2.2-beta** is required which can be downloaded at: https://github.com/husonlab/splitstree6
+* To run the scripts for *fastStructure* **Python version 2.7.18** is required, to enable the use of this, create a virtual enviornmnet: ```conda create -y -n /shared/conda/faststructure python=2.7.18``` change the name and location accordingly. Other dependencies are:
+  * **faststructure** version 0.0.0, which can be cloned here: git clone https://github.com/rajanil/fastStructure
+  * **scipy** version 1.2.1, which can be installed in a python 2 environment by: ```pip install scipy```
+  * **numpy** version 1.16.5, which can be installed in a python 2 environment by: ```pip install numpy```
+  * **utils** version 0.9.0, which can be installed in a python 2 environment by: ```pip install utils```
+  * **Structure Plot** version 2.0, which can be accessed here: http://omicsspeaks.com/strplot2/
 
-## Files Required
+## 2. Files Required
 
 <a name="files_required"></a>
 
 * A **vcf** with all your samples, in this repository it is called 'Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf'
 * A reference **fasta file** to which your reads were aligned to, in this repository it is called 'lyrata.fasta'
 
-## Initial Visualisation of Data
+## 3. Initial Visualisation of Data
 
 <a name="initial_visualisation_of_data"></a>
 
@@ -90,10 +89,13 @@ Read in vcf:
 vcf <- read.vcfR("[title_of_vcf].vcf")
 ```
 
+### 3.1 Convert your VCF into a Genlight Object
+
 <a name="#vcf_to_genlight"></a>
+
 Convert your vcf into a genlight object using the **create_genlight_object.R** script
 
-### Check your data - this section is optional:
+### 3.2 Check your data - this section is optional:
 
 <a name="sense_check"></a>
 
@@ -108,7 +110,7 @@ If you want to see the populations and number of them, run: ```unique(pop(aa.gen
 
 If you want to see the variety of ploidy in sample, run: ```unique(ploidy(aa.genlight))```
 
-### Run an initial PCA:
+### 3.3 Run an initial PCA:
 
 <a name="initial_pca"></a>
 
@@ -133,21 +135,23 @@ s.class(pca.1$scores, ploidy_labels, xax=1, yax=2, col=transp(col,.6), ellipseSi
 
 As you can see PC1 seems to relatively seperate diploids and tetraploids and PC2 hybrids from pure lyrata. However, this isnt a perfect pattern, many diploids cluster positively with PC1 (with the tetraploids). Furthermore, the tetraploids include hybrids (mixture of lyrata and arenosa) and a population genetically similar to arenosa (KEH). In the diploid population there are only pure lyrata, this means that the PCA could be unbalanced as there are no arenosa diploids to balance out the arenosa tetraploids.
 
-## Filter Data for Further Analysis of Trends
+## 4. Filter Data for Further Analysis of Trends
 
 <a name="filter_data_for_further_analysis_of_trends"></a>
 
-### Filter your vcf with gatk:
+### 4.1 Filter your vcf with gatk:
 
 <a name="gatk"></a>
 
-Run the **filter_vcf.sh** script, changing the populations on line 11 to those you require, this also requires the **retrieve_IDs_updated_FIX.py** script.
+Run the **filter_vcf.sh** script by typing ```./filter_vcf.sh``` if the script is in the directory you are currently in. This also requires the **retrieve_IDs_updated_FIX.py** script (located in the same directory). Change the vcf in line 10,23 and 28 to your vcfs name, you can aldo change the populations on line 11 to those you require and on lines 17,20 and 27 change the reference fasta file to the one that matches your data. 
 
-### Re-run the PCA:
+At this stage, the diploids were removed from our dataset.
+
+### 4.2 Re-run the PCA:
 
 <a name="second_pca"></a>
 
-In R, read in the vcf: 
+In R, read in the vcf. The vcf created from the filter_vcf.sh script is called 'tetraploid.vcf', to change this edit line 30.
 ```
 vcf <- read.vcfR("tetraploid.vcf")
 ```
@@ -166,7 +170,7 @@ s.class(pca.2$scores, pop(aa.genlight), xax=1, yax=2, col=transp(col,.6), ellips
 
 Again PC1 seperates pure lyrata (left) from hybrids (centre) and populations closer to arenosa (right) and PC2 is potentially seperating populations via geography.
 
-### To test if PC2 is seperating populations via geographical location you can use the leaflet() package:
+### 4.3 To test if PC2 is seperating populations via geographical location you can use the leaflet() package:
 
 <a name="map"></a>
 
@@ -202,7 +206,7 @@ SetView() is used to set the central coordinates of the map produced (the ones u
 ![Annotated Map](Figures/annotated_map.png)
 Using the labelOptions() function, the populations that were sampled outside the main cluster i.e. SCT, BZD, PEK, TEM and GYE were highlighted. On the PCA SCT plots most positvely with PC2 and was sampled the furtherst North, similar with BZD, TEM and PEK so this supports the hypothesis that PC2 seperates the populations by geography. However, GYE is further South from the sample cluster, but it doesn't have the most negative correlation with PC2 (this is LIC, MOD and JOH). Therefore, the relationship which PC2 describes is not fully clear.
 
-### For further analysis you can plot the PCA by individuals:
+### 4.4 For further analysis you can plot the PCA by individuals:
 
 <a name="third_pca"></a>
 
@@ -210,7 +214,7 @@ Run the **individuals_PCA.R** script.
 
 ![Individuals PCA](Figures/individuals_pca.png)
 
-### Filter out impure individuals
+### 4.5 Filter out impure individuals
 
 <a name="further_gatk"></a>
 
@@ -224,13 +228,13 @@ Load this vcf into R (```vcf <- read.vcfR("filtered_tetraploids.vcf")```) and re
 
 ![Filtered PCA](Figures/filtered_pca.png)
 
-It is obvious by now that PC1 splits individuals closest to arenosa (left), hybrids (central) and pure lyrata (right), however it is slightly unclear what PC2 annotates. For example, why does BZD cluster on its own? Investigating relatedness may clear this up.
+It is obvious by now that PC1 splits individuals closest to arenosa (left), hybrids (central) and pure lyrata (right), thus the populationd which may be allopolyploids are BZD, OCH, FRE, ROK, HAB, LOI, PIL and GYE. It is still slightly unclear what PC2 annotates. For example, why does BZD cluster on its own? Investigating relatedness may clear this up.
 
-## Relatedness Calculations
+## 5. Relatedness Calculations
 
 <a name="relatedness_calculations"></a>
 
-### Calculate Nei's distances
+### 5.1 Calculate Nei's distances
 
 <a name="nei"></a>
 
@@ -241,7 +245,7 @@ The following plot is produced for the data I am using:
 
 This tree is unrooted and follows the same trends as seen with the PCA and purity figure: LIC and MOD branch together as they are the purest lyrata, and share a recent common ancester. JOH (one of the new populations) branches with these two and clusters with them on the PCA meaning it must be a pure lyrata. The SCT, PEK and TEM populations, which we first saw clustering seperately on the PCA and then discovered a geographical similarity, branch as the same trio, showing a genetic liklihood. Other trends show and are easier to see when uploading to the SplitsTree software.
 
-### SplitsTree
+### 5.2 SplitsTree
 
 <a name="splitstree"></a>
 
@@ -251,7 +255,7 @@ After downloading SplitsTree (instructions at the top of the page) upload your .
 
 Interestingly, SWB and MAU are outgrouped. From the Marburger et al., purity plot these individuals were annotated as approximate pure lyrata. These two populations likely diverged first after undergoing WGD and havent hybridised. Interestingly the population closest to arenosa (KEH) is nested amongst the lineage, this supports the theory that these lyrata tetraploids hybridised post WGD. The distance from KEH from its shared common ancestor with OCH is extensive, meaning the further aquisition of arenosa material occured after divergence. The allopolyploids form a monophyletic group (KEH to PIL) every other population external to this (except GYE) is relatively pure lyrata.
 
-## FastStructure
+## 6. FastStructure
 
 <a name="fast_structure"></a>
 
@@ -262,17 +266,17 @@ Run the **faststructure_pipeline_final.sh** script on a HPC using sbatch (```sba
 * Runs faststructure on the data and produces csv files for K values 2-4 in a format acceptable by the structure plot website 
 
 NOTE
-If you want to change the populations used you will have to change the pops used in line 61, 100 and 161
+If you want to change the populations used you will have to change the pops used in lines 57, 93 and 148
 
 After running, download the csv files from the /final_omicsspeaks_output directory and upload them to structure plot: http://omicsspeaks.com/strplot2/
 
 ![Structure Plot](Figures/final_fs.png)
 
-After preliminary testing, the populations SWB, GYE, TEM, SCT, LOI, PIL and SCB were removed as too many pure lyrata skewed the plot as there was only one pure arenosa in comparison. Some of the removed populations weren't fully pure lyrata however due to having a low percentage of arenosa genes, aren't likely to be allopolyploids. SCT and TEM were removed and PEK kept as they are closely related so one population surfices to represent the others. This package is not fully reliable as the data had to be filtered slightly to produce a worthy plot.
+After preliminary testing, the populations SWB, GYE, TEM, SCT, LOI, PIL and SCB were removed as too many pure lyrata skewed the plot as there was only one pure arenosa in comparison. If you wish to adjust this change the populations on lines 57, 93 and 148. Some of the removed populations weren't fully pure lyrata however due to having a low percentage of arenosa genes, aren't likely to be allopolyploids. SCT and TEM were removed and PEK kept as they are closely related so one population surfices to represent the others. This package is not fully reliable as the data had to be filtered slightly to produce a worthy plot.
 
 The plot is at k = 2, with KEH (far left) plotting as almost full arenosa (expected from previous knowledge), BZD, OCH, FRE, ROK and HAB plotting as hybrids and the rest plotting as pure lyrata (expected). 
 
-## Allele Frequency Spectrum
+## 7. Allele Frequency Spectrum
 
 <a name="allele_frequency_spectrum"></a>
 
@@ -284,7 +288,7 @@ The **autohexaploids** plot with an exponential distribution which is right skew
 
 Autopolyploids always follow this exponential distribution, where the increase in sets of chromosomes only broadens the allele frequency distribtution. However, it is uncertain how a allo**tetraploid** would plot as the above histogram plots **hexaploid** data. To avoid potential overlooking of data and to draw reasonable comparisons, it is best to create an example allotetraploid to compare the sample data with.
 
-### Creating an example allotetraploid:
+### 7.1 Creating an example allotetraploid:
 
 <a name="allotetraploid"></a>
 
@@ -294,7 +298,7 @@ Return to R studio and download the files 'arenosa_632.txt.gz' and 'lyrata_272_w
 
 The filtered plot is set to allele freqeucy >0.1 to remove the skew created by SNPs. From the filtered plot it is clear to see there is still a central peak in allotetraploids it it just less defined than the allohexaploid plot (note this may be becuase of different sample or bin sizing). Now lets compare our data to this allotetraploid.
 
-### Creating allele frequency histograms
+### 7.2 Creating allele frequency histograms
 
 <a name="histogram"></a>
 
@@ -304,7 +308,10 @@ Execute the **allele_frequency_plots.R** script in R, which also requires the ex
 
 None of the populations seem to follow the same pattern as the example allotetraploid created above. There is a clear absence of a middle peak which is a conserved trait of allopolyploids. 
 
-## Acknowledgements
+## 8. Acknowledgements
+
+<a name="acknowledgements"></a>
+
 * **adegenet**
   * Jombart, T. (2008) adegenet: a R package for the multivariate analysis of genetic markers. Bioinformatics 24: 1403-1405. doi: 10.1093/bioinformatics/btn129
   * Jombart T. and Ahmed I. (2011) adegenet 1.3-1: new tools for the analysis of genome-wide SNP data. Bioinformatics. doi: 10.1093/bioinformatics/btr521
