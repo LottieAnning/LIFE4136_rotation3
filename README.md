@@ -93,7 +93,7 @@ vcf <- read.vcfR("[title_of_vcf].vcf")
 
 <a name="#vcf_to_genlight"></a>
 
-Convert your vcf into a genlight object using the **create_genlight_object.R** script
+Convert your vcf into a genlight object using the **create_genlight_object.R** script (to execute an R script simply open it in the console window and click [Run]).
 
 ### 3.2 Check your data - this section is optional:
 
@@ -222,7 +222,7 @@ From observation alone it is clear to see that some individuals are plotting inc
 
 ![Annotated Individuals PCA](Figures/annotated_individuals_pca.png)
 
-Re run the **filter_vcf.sh** script, changing the '-opre' flag on line 14 to 'filtered_tetraploid.args', adding the '-xcl' flag to line 15 followed by 'samples_to_exclude.args' which is a file provided at the top of the page consisting of the 9 impure individuals and finally change the '--output' flag on line 30 to 'filtered_tetraploids.vcf'.
+Re run the **filter_vcf.sh** script (```./filter_vcf.sh```), changing the '-opre' flag on line 14 to 'filtered_tetraploid.args', adding the '-xcl' flag to line 15 followed by 'samples_to_exclude.args' which is a file provided at the top of the page consisting of the 9 impure individuals and finally change the '--output' flag on line 30 to 'filtered_tetraploids.vcf'.
 
 Load this vcf into R (```vcf <- read.vcfR("filtered_tetraploids.vcf")```) and re-run the PCA using the **individuals_PCA.R** script
 
@@ -259,11 +259,11 @@ Interestingly, SWB and MAU are outgrouped. From the Marburger et al., purity plo
 
 <a name="fast_structure"></a>
 
-Run the **faststructure_pipeline_final.sh** script on a HPC using sbatch (```sbatch faststructure_pipeline_final.sh```). The **retrieve_IDs_updated_FIX.py**, **reorder_str_file.py** and **Cochlearia_create_structure_file.py** scripts are required here. Along with your reference fasta file, your vcf file and an .args files with a list of populations you want to exclude (called samples_to_exclude.args, included at the top of the page). This script produces the following:
+Run the **faststructure_pipeline_final.sh** script using: (```./faststructure_pipeline_final.sh```). The **retrieve_IDs_updated_FIX.py**, **reorder_str_file.py** and **Cochlearia_create_structure_file.py** scripts are required here. Along with your reference fasta file, your vcf file and an .args files with a list of populations you want to exclude (an example called samples_to_exclude.args is included at the top of the page). This script produces the following:
 * A filtered vcf with only specific populations
 * VCFs for each population in the filtered vcf you created. This becomes useful later on when trying to find signatures of allopolyploidy
 * A .str file which works with faststructure
-* Runs faststructure on the data and produces csv files for K values 2-4 in a format acceptable by the structure plot website 
+* Runs faststructure on the data and produces csv files for K values 1-10 in a format acceptable by the structure plot website 
 
 NOTE
 If you want to change the populations used you will have to change the pops used in lines 57, 93 and 148
@@ -274,7 +274,7 @@ After running, download the csv files from the /final_omicsspeaks_output directo
 
 After preliminary testing, the populations SWB, GYE, TEM, SCT, LOI, PIL and SCB were removed as too many pure lyrata skewed the plot as there was only one pure arenosa in comparison. If you wish to adjust this change the populations on lines 57, 93 and 148. Some of the removed populations weren't fully pure lyrata however due to having a low percentage of arenosa genes, aren't likely to be allopolyploids. SCT and TEM were removed and PEK kept as they are closely related so one population surfices to represent the others. This package is not fully reliable as the data had to be filtered slightly to produce a worthy plot.
 
-The plot is at k = 2, with KEH (far left) plotting as almost full arenosa (expected from previous knowledge), BZD, OCH, FRE, ROK and HAB plotting as hybrids and the rest plotting as pure lyrata (expected). 
+The plot is at k = 2 because there are only two 'clusters' (arenosa and lyrata), with KEH (far left) plotting as almost full arenosa (expected from previous knowledge), BZD, OCH, FRE, ROK and HAB plotting as hybrids and the rest plotting as pure lyrata (expected). 
 
 ## 7. Allele Frequency Spectrum
 
@@ -302,7 +302,7 @@ The filtered plot is set to allele freqeucy >0.1 to remove the skew created by S
 
 <a name="histogram"></a>
 
-Execute the **allele_frequency_plots.R** script in R, which also requires the execution of the **poly_freq.c** script in a Unix enviornment. The following five plots are for the five hybrid populations which plotted as roughly half arenosa and half lyrata in the fast structure plot. These can be viewed seperately in the Figures/ directory at the top of the page. Each of the histograms were plotted with a bin size according to the sample size and were again filtered for an allele frequency >0.1.
+Execute the **allele_frequency_plots.R** script in R, which also requires the execution of the **poly_freq.c** script in a Unix enviornment (instructions in the R script), this was attained from Toumas Hämälä https://github.com/thamala/polySV. The following five plots are for the five hybrid populations which plotted as roughly half arenosa and half lyrata in the fast structure plot. These can be viewed seperately in the Figures/ directory at the top of the page. Each of the histograms were plotted with a bin size according to the sample size and were again filtered for an allele frequency >0.1.
 
 ![All AFSs](Figures/all_afs.png)
 
