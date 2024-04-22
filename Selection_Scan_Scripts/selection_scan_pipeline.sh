@@ -9,7 +9,7 @@ conda activate selection_scan_environment
 
 # get AC tables for one suspected allopolyploid population and one pure lyrata population
 gatk VariantsToTable \
-        -V individual_population_files/BZD_individuals.args.vcf \
+        -V BZD_individuals.args.vcf \
         -F CHROM \
         -F POS \
         -F AC \
@@ -18,7 +18,7 @@ gatk VariantsToTable \
         -O BZD_raw.table
 
 gatk VariantsToTable \
-        -V individual_population_files/LIC_individuals.args.vcf \
+        -V LIC_individuals.args.vcf \
         -F CHROM \
         -F POS \
         -F AC \
