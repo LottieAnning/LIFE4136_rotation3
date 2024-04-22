@@ -8,8 +8,8 @@
 
 # Before running you will need:
 # 1. A directory  (~/faststructure), and within that directory there should be:
-    # A. The lyrata.fasta file
-    # B. The Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf file containing all the populations. If you have the compressed .gz file make sure you use the unzip command  
+    # A. The reference fasta file
+    # B. The vcf file containing all the populations. If you have the compressed .gz file make sure you use the gunzip command  
     # C. A file called samples_to_exclude.args that contains all the outlier individuals for each population, so we can exclude them from the filtered vcf
 
 # 2. Scripts:
@@ -42,8 +42,19 @@ mkdir individual_population_files
 mkdir -p faststructure_output/vcf_dir
 mkdir faststructure_output/final_svg_files
 
+# Prompt the user for their file names:
+## vcf:
+echo "Please enter your vcf name:" 	# for example "Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf"
+read vcf
+## fasta file:
+echo "Please enter your reference fasta file name:" 	# for example "lyrata.fasta"
+read fasta
+
 #get the 'attributes' of your environment 
 source $HOME/.bash_profile
+
+# Initialize Conda
+eval "$(conda shell.bash hook)"
 
 ## Part1 Getting a filtered vcf. The populations should be given in the order you want the final faststructure output to be in. 
 ## Whenever you are changing the populations you use you will change the populations in the --pop argument of the retrieve_IDs_updated_FIX.py python script
@@ -53,7 +64,7 @@ conda activate /shared/apps/conda/bio2
 
 # get sample names to include in the filtered vcf
 python3 retrieve_IDs_updated_FIX.py \
-	-i Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf \
+	-i "$vcf" \
 	--pop 'KEH','BZD','OCH','FRE','ROK','HAB','KAG','MAU','JOH','MOD','LIC','PEK' \
 	--same_file 'yes' \
 	-odir final_populations \
@@ -63,19 +74,19 @@ python3 retrieve_IDs_updated_FIX.py \
 
 # prodce dictionary file for reference fasta
 gatk CreateSequenceDictionary \
-	-R lyrata.fasta
+	-R "$fasta"
 
 # create index file for the fasta file
-samtools faidx lyrata.fasta
+samtools faidx "$fasta"
 
 # index the vcf file
 gatk IndexFeatureFile \
-	-I Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf
-
+	-I "$vcf"
+ 
 # filter the vcf to only contain biallelic variants we are interested in
 gatk SelectVariants \
-	-R lyrata.fasta \
-	-V Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf \
+	-R "$fasta" \
+	-V "$vcf" \
 	-sn final_populations/gatk_args_output/*.args \
 	--output final_populations/diploids_hybird_1arenosa_1lyrata.vcf
 
@@ -88,7 +99,7 @@ conda activate /shared/apps/conda/bio2
 # get sample names to include in the filtered vcf
 # Now do everything again but produce files for the individual populations
 python3 retrieve_IDs_updated_FIX.py \
-        -i Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf \
+        -i "$vcf" \
         --pop 'KEH','BZD','OCH','FRE','ROK','HAB','KAG','MAU','JOH','MOD','LIC','PEK' \
         --same_file 'no' \
         -odir individual_population_files \
@@ -96,10 +107,10 @@ python3 retrieve_IDs_updated_FIX.py \
 
 # prodce dictionary file for reference fasta
 gatk CreateSequenceDictionary \
-	-R ~/lyrata_arenosa_data/lyrata.fasta
+	-R ~/lyrata_arenosa_data/"$fasta"
 
 # create index file for the fasta file
-samtools faidx ~/lyrata_arenosa_data/lyrata.fasta
+samtools faidx ~/lyrata_arenosa_data/"$fasta"
 
 # go through all the arg files to produce a vcf for each individual population
 for file in individual_population_files/gatk_args_output/*.args ; do
@@ -109,8 +120,8 @@ for file in individual_population_files/gatk_args_output/*.args ; do
 	
 	## filter the vcf to only contain biallelic variants we are interested in
 	gatk SelectVariants \
-		-R lyrata.fasta \
-		-V Chrom_1_noSnakemake.lyrata.bipassed.dp.m.bt.1pct.ld_pruned.vcf \
+		-R "$fasta"a \
+		-V "$vcf" \
 		-sn "$file" \
 		--output individual_population_files/"$individual_file.vcf"
 done
