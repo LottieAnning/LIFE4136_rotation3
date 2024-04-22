@@ -29,7 +29,8 @@ The data that this project is comprised of are diploid and tetraploid in nature.
 - [7. Allele Frequency Spectrum](#allele_frequency_spectrum)
   - [7.1 Creating an example allotetraploid](#allotetraploid)
   - [7.2 Creating allele frequency histograms](#histogram)
-- [8. Acknowledgements](#acknowledgements) 
+- [8. Selection Scan](#selection_scan) 
+- [9. Acknowledgements](#acknowledgements) 
 
 ## 1. Dependencies
 
@@ -56,6 +57,16 @@ The data that this project is comprised of are diploid and tetraploid in nature.
   * **numpy** version 1.16.5, which can be installed in a python 2 environment by: ```pip install numpy```
   * **utils** version 0.9.0, which can be installed in a python 2 environment by: ```pip install utils```
   * **Structure Plot** version 2.0, which can be accessed here: http://omicsspeaks.com/strplot2/
+* To produce *selection scans* create a virtual environment: ```conda create -y -n selection_scan_environment python=3.7``` and install the following packages:
+  * **R version 4.2**, install by typing ```conda install -c conda-forge r-base=4.2``` into the command line
+  * **ggplt2**, install by typing ```conda install r-ggplot2=3.3.6``` into the command line
+  * **bedtools**, install by typing ```conda install -c bioconda bedtools -y``` into the command line
+  * **gatk4**, install by typing ```conda install -c bioconda gatk4 -y``` into the command line
+  * **natsort**, install by typing ```pip install natsort``` into the command line
+  * **pandas**, install by typing ```pip install pandas``` into the command line
+  * **matplotlib**, install by typing ```pip install matplotlib``` into the command line
+  * **numpy**, install by typing ```pip install numpy``` into the command line
+  * **scipy**, install by typing ```pip install scipy``` into the command line
 
 ## 2. Files Required
 
@@ -308,7 +319,13 @@ Execute the **allele_frequency_plots.R** script in R, which also requires the ex
 
 None of the populations seem to follow the same pattern as the example allotetraploid created above. There is a clear absence of a middle peak which is a conserved trait of allopolyploids. 
 
-## 8. Acknowledgements
+## 8. Selection Scans
+
+<a name="selection_scan"></a>
+
+From the fast structure pipeline there was a directory created called 'individual_population_files/' within this there are individual vcfs for each of your populations you determined earlier. From your home directory, create a new directory called 'selection_scan/' with the ```mkdir``` command and copy the files of the populations you want to run a selection scan on into this directory with the ```cp``` command. I used BZD_individuals.args.vcf and LIC_individuals.args.vcf to investigate the differences between the suspected allopolyploid (BZD) and a pure lyrata (LIC). Now download the scripts at the top of this repository in the 'Selection_Scan_Scripts/' directory and execute the selection_scan_pipeline.sh script (```./selection_scan_pipeline.sh```)
+
+## 9. Acknowledgements
 
 <a name="acknowledgements"></a>
 
