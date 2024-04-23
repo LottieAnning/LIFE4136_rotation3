@@ -32,6 +32,8 @@ The data that this project is comprised of are diploid and tetraploid in nature.
 - [8. Selection Scan](#selection_scan) 
 - [9. Acknowledgements](#acknowledgements) 
 
+![Intro Pic](Figures/intro_pic.png)
+
 ## 1. Dependencies
 
 <a name="dependencies"/>
