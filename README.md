@@ -323,7 +323,9 @@ None of the populations seem to follow the same pattern as the example allotetra
 
 <a name="selection_scan"></a>
 
-From the fast structure pipeline there was a directory created called 'individual_population_files/' within this there are individual vcfs for each of your populations you determined earlier. From your home directory, create a new directory called 'selection_scan/' with the ```mkdir``` command and copy the files of the populations you want to run a selection scan on into this directory with the ```cp``` command. I used BZD_individuals.args.vcf and LIC_individuals.args.vcf to investigate the differences between the suspected allopolyploid (BZD) and a pure lyrata (LIC). Now download the scripts at the top of this repository in the 'Selection_Scan_Scripts/' directory and execute the selection_scan_pipeline.sh script (```./selection_scan_pipeline.sh```)
+From the fast structure pipeline there was a directory created called 'individual_population_files/' within this there are individual vcfs for each of your populations you determined earlier. From your home directory, create a new directory called 'selection_scan/' with the ```mkdir``` command and copy the files of the populations you want to run a selection scan on into this directory with the ```cp``` command. I used BZD_individuals.args.vcf and LIC_individuals.args.vcf to investigate the differences between the suspected allopolyploid (BZD) and a pure lyrata (LIC). Now download the scripts at the top of this repository in the 'Selection_Scan_Scripts/' directory and execute the selection_scan_pipeline.sh script (```./selection_scan_pipeline.sh```). To use different populations these need to be changed within script. 
+
+This will create allele count tables and various graphs. 
 
 ## 9. Acknowledgements
 
