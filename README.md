@@ -327,7 +327,7 @@ From the fast structure pipeline there was a directory created called 'individua
 
 This will create allele count tables and various graphs. Such like the graph below which is an Fst histogram at 10,000ppm (parts per million) for the 2 populations LIC and BZD. The right-skewed distribution suggests that the majority of Fst values are lower, indicating moderate to low genetic differentiation between the populations. This could mean that most of the genetic variation is shared between the populations which is expected as they both consist of lyrata genome. The outliers close to Fst values of 1 indicate instances where genetic differentiation is very high or nearly complete. These outliers might represent loci or genomic regions that are highly diverged or under strong selective pressure in one or both populations.
 
-![FST plot](Figures/LICBZD_2SNPs_10000ppm_Fst_histogram.pdf)
+![FST plot](Figures/LICBZD_2SNPs_10000ppm_Fst_histogram.png)
 
 After running this analysis on other suspected allopolyploids (HAB, OCH, FRE and ROK) it was discovered that three (BZD, HAB and OCH) had a gene called 'PHS1' which regulates recombination and pairing of homologous chromosomes during meiotic prophase. This was acquired from the various files with the syntax '2SNPs_10000ppm_ALL_0ol_GF.txt'. This means that this gene is being selected for so that gene flow and reproductive compatibility is improved between arenosa and lyrata hybrids. The stabilisation of hybrid genomes means the population has a possibility of forming a subgenome and thus being an allopolyploid. 
 
