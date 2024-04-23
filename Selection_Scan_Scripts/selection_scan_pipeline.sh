@@ -29,7 +29,7 @@ gatk VariantsToTable \
 echo 'raw tables produced!'
 
 # run G1 script. populations need to be changed in the arguments
-# use the allele count tables generated in the previous step to create plots of different metrics like histogram of Fst. An example directory which these will be stored in is the plots are in a folder stores in the directory e.g LICBZD/graphs
+# use the allele count tables generated in the previous step to create plots of different metrics like histogram of Fst. An example directory which these will be stored in is the directory e.g LICBZD/graphs
 # we set the number of SNPs in each analysed window to be 2. It is a crude way of a doing things because there is a lot of random noise that will be picked up using only 2 SNPs but we couldnt find genes to do with meiosis using reasonable genes 
 # the -cut sets it so that we are looking for top 0.5% of empirical outliers. This might help a bit with the increased noise caused by the small SNPs per window
 # In terms of window size for now the theory is that a window is considered as the base pairs (bp) between two SNPs, but the window size cant exceed 26560 bp. 
@@ -49,7 +49,7 @@ sed 's/scaffold_1/NW_003302555.1/' LyV2.gff > LyV2_edited.gff
 
 echo 'edited gff with success'
 
-# run G2 script. populations need to be changed in the argyments
+# run G2 script. populations need to be changed in the arguments
 # this script takes the directory with the files produced from the G1 script as input. The -an argument is the lyrata gff we have been given.
 # the gf script is a list of lyrata genes and their homologs in thaliana (with their functions as well)
 # the most important file is a file with ALL in the name like this 'LICBZD_2SNPs_5000ppm_ALL_0ol_GF.txt'. It contains all the genes caught in the selection scan name. 
