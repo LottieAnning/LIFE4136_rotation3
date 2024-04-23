@@ -325,7 +325,13 @@ None of the populations seem to follow the same pattern as the example allotetra
 
 From the fast structure pipeline there was a directory created called 'individual_population_files/' within this there are individual vcfs for each of your populations you determined earlier. From your home directory, create a new directory called 'selection_scan/' with the ```mkdir``` command and copy the files of the populations you want to run a selection scan on into this directory with the ```cp``` command. I used BZD_individuals.args.vcf and LIC_individuals.args.vcf to investigate the differences between the suspected allopolyploid (BZD) and a pure lyrata (LIC). Now download the scripts at the top of this repository in the 'Selection_Scan_Scripts/' directory and execute the selection_scan_pipeline.sh script (```./selection_scan_pipeline.sh```). To use different populations these need to be changed within script. 
 
-This will create allele count tables and various graphs. 
+This will create allele count tables and various graphs. Such like the graph below which is an Fst histogram at 10,000ppm (parts per million) for the 2 populations LIC and BZD. The right-skewed distribution suggests that the majority of Fst values are lower, indicating moderate to low genetic differentiation between the populations. This could mean that most of the genetic variation is shared between the populations which is expected as they both consist of lyrata genome. The outliers close to Fst values of 1 indicate instances where genetic differentiation is very high or nearly complete. These outliers might represent loci or genomic regions that are highly diverged or under strong selective pressure in one or both populations.
+
+![FST plot](Figures/LICBZD_2SNPs_10000ppm_Fst_histogram.pdf)
+
+After running this analysis on other suspected allopolyploids (HAB, OCH, FRE and ROK) it was discovered that three (BZD, HAB and OCH) had a gene called 'PHS1' which regulates recombination and pairing of homologous chromosomes during meiotic prophase. This was acquired from the various files with the syntax '2SNPs_10000ppm_ALL_0ol_GF.txt'. This means that this gene is being selected for so that gene flow and reproductive compatibility is improved between arenosa and lyrata hybrids. The stabilisation of hybrid genomes means the population has a possibility of forming a subgenome and thus being an allopolyploid. 
+
+In conclusion our data doesnt seem to definitely contain any allopolyploids however they are definitely in the process of forming. By collecting more data or studying populations which underwent WGD and subsequent interspecies hybridisation less recently there would be a greater chance of discovering allopolyploids and ensuing genome reduction.
 
 ## 9. Acknowledgements
 
