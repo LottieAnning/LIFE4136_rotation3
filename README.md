@@ -343,6 +343,8 @@ In conclusion our data doesnt seem to definitely contain any allopolyploids howe
 * **adegraphics**
   * Aurélie Siberchicot, Alice Julien-Laferrière, Anne-Béatrice Dufour, Jean Thioulouse and Stéphane Dray (2017). adegraphics: An S4 Lattice-Based Package for the Representation of Multivariate Data. The R Journal. 9:2. 198--212. https://journal.r-project.org/archive/2017/RJ-2017-042/index.html
   * Jean Thioulouse, Stéphane Dray, Anne-Béatrice Dufour, Aurélie Siberchicot, Thibaut Jombart and Sandrine Pavoine (2018). Multivariate Analysis of Ecological Data with ade4. Springer. https://doi.org/10.1007/978-1-4939-8850-1
+* **bedtools**
+  * Quinlan AR and Hall IM, 2010. BEDTools: a flexible suite of utilities for comparing genomic features. Bioinformatics. 26, 6, pp. 841–842.
 * **dplyr**
   * Wickham H, François R, Henry L, Müller K, Vaughan D (2023). _dplyr: A Grammar of Data Manipulation_. R package version 1.1.4, <https://CRAN.R-project.org/package=dplyr>.
 * **faststructure**
@@ -355,8 +357,14 @@ In conclusion our data doesnt seem to definitely contain any allopolyploids howe
   * Slowikowski K (2024). _ggrepel: Automatically Position Non-Overlapping Text Labels with 'ggplot2'_. R package version 0.9.5, <https://CRAN.R-project.org/package=ggrepel>.
 * **leaflet**
   * Cheng J, Schloerke B, Karambelkar B, Xie Y (2023). _leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library_. R package version 2.2.1, <https://CRAN.R-project.org/package=leaflet>.
+* **matplotlib**
+  * J. D. Hunter, "Matplotlib: A 2D Graphics Environment", Computing in Science & Engineering, vol. 9, no. 3, pp. 90-95, 2007. 
+* **natsort**
+  * Seth M. Morton (2020). natsort: Natural order sorting for python. Zenodo. http://doi.org/10.5281/zenodo.3921688
 * **numpy**
   * Harris, C.R., Millman, K.J., van der Walt, S.J. et al. Array programming with NumPy. Nature 585, 357–362 (2020). DOI: 10.1038/s41586-020-2649-2. (Publisher link).
+* **pandas**
+  * Wes McKinney. (2010). Data Structures for Statistical Computing in Python. Proceedings of the 9th Python in Science Conference, 51-56.
 * **SAMtools**
   * Petr Danecek, James K Bonfield, Jennifer Liddle, John Marshall, Valeriu Ohan, Martin O Pollard, Andrew Whitwham, Thomas Keane, Shane A McCarthy, Robert M Davies, Heng Li. Twelve years of SAMtools and BCFtools. GigaScience, Volume 10, Issue 2, February 2021, giab008, https://doi.org/10.1093/gigascience/giab008
 * **scipy**
