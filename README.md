@@ -48,6 +48,7 @@ The data that this project is comprised of are diploid and tetraploid in nature.
   * **StAMPP** version 1.6.3 or higher, simply install by typing: ```install.packages(StAMPP)``` into the R command line
   * **tidyr** version 1.3.0 or higher, simply install by typing: ```install.packages(tidyr)``` into the R command line
   * **vcfR** version 1.15.0 or higher, simply install by typing: ```install.pacakges(vcfR)``` into the R command line
+  * **nortest** version 1.0-4 or higher, simply install by typing: ```install.pacakges(nortest)``` into the R command line
 * To run *gatk*, **version 4.2.2.0** is required, first create a virtual environment, for example ```conda create --name /shared/apps/conda/bio2```, change the name and location accordingly. Then download the package: https://github.com/broadinstitute/gatk/releases, and follow installation instructions. Other dependencies are:
   * **Conda version 23.11.0** which can be downloaded here: https://conda.io/projects/conda/en/latest/user-guide/install/index.html simply choose your device type (Mac, Windows or LINUX), choose the miniconda installer as this is free and will suffice for this project, download the installer, verify your installer with hashers (more information on how to do this for your specific device type are on the website) and download the package.
   * **Python version 3.8.12** your device may already have python installed, to check type ```python3 version``` in a command prompt (windows) or terminal (mac), if not download it here: https://www.python.org/downloads/release/python-3123/
@@ -92,6 +93,7 @@ library(ggplot2)
 library(ggrepel)
 library(StAMPP)
 library(leaflet)
+library(nortest)
 ```
 Set working directory:
 ```
@@ -319,7 +321,7 @@ Execute the **allele_frequency_plots.R** script in R, which also requires the ex
 
 ![All AFSs](Figures/all_afs.png)
 
-None of the populations seem to follow the same pattern as the example allotetraploid created above. There is a clear absence of a middle peak which is a conserved trait of allopolyploids. 
+None of the populations seem to follow the same pattern as the example allotetraploid created above. There is a clear absence of a middle peak which is a conserved trait of allopolyploids. To statistically test this, run the **compare_AFS.R** script. This requires the dataframe 'df' you created earlier with the **allele_frequency_plots.R** script. When testing for normality with the Anderson-Darling test, both LIC and BZD are not normal (p values of **2.2e-16** and **2.2e-16** respectively), so the Wilcoxon test is then used to compare the both with the example allotetraploid created earlier with **synthetic_allotetraploid.R**. Both have a significant difference to the data (p values of 2.019e-06 and 1.98e-09 respectively) meaning there is a significantly different distribution between both populations and the example allotetraploid, meaning neither are allotetraploids (expected for LIC).
 
 ## 8. Selection Scans
 
